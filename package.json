@@ -1,0 +1,57 @@
+{
+  "name": "badge-builder",
+  "version": "1.0.0",
+  "private": false,
+  "type": "module",
+  "description": "A powerful SVG Badge Builder with full visual control for creating custom GitHub README badges.",
+  "author": "Tariq Said",
+  "license": "MIT",
+  "homepage": "https://tariqsaidofficial.github.io/badge-builder/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tariqsaidofficial/badge-builder.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tariqsaidofficial/badge-builder/issues"
+  },
+  "keywords": [
+    "svg",
+    "badge",
+    "badge-generator",
+    "readme",
+    "github-readme",
+    "react",
+    "material-ui",
+    "svg-generator",
+    "developer-tools",
+    "shields-io"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.0.0",
+    "@mui/material": "^9.0.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "autoprefixer": "^10.5.0",
+    "eslint": "^10.2.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.5.0",
+    "postcss": "^8.5.10",
+    "tailwindcss": "^3.4.19",
+    "vite": "^8.0.10"
+  }
+}
