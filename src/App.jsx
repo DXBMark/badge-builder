@@ -380,7 +380,7 @@ const App = ({ mode }) => {
         <Container maxWidth="xl">
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
             <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 700 }}>
-              Badge Builder Pro — Open Source SVG Badge Generator
+              © 2026 Badge Builder Pro by DXBMark Ltd. All rights reserved.
             </Typography>
             <Typography variant="caption" sx={{ color: 'text.disabled' }}>
               Built with React 19 + Material UI v9
