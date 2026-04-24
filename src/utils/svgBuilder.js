@@ -2,7 +2,7 @@
  * Project: SVG Badge Builder
  * Author: [TS]
  * Purpose: SVG Generation Logic
- * Notes: Follow TS conventions.
+ * Notes: Follow TS conventions. Added Smart Alignment and Auto Width.
  */
 
 import { escapeXml, sanitize } from './sanitize';
@@ -21,22 +21,73 @@ export const buildSVG = (config) => {
     leftFontWeight, rightFontWeight, fontFamily,
     leftAlign, leftAlignY, rightAlign, rightAlignY, 
     iconType, iconScale, iconX, iconY, outlineWidth, outlineColor,
-    iconMode, customIconUrl, customSvgContent
+    iconMode, customIconUrl, customSvgContent, autoWidth, smartAlign
   } = config;
 
-  const safeWidth = sanitize(width, 40, 2000);
-  const safeHeight = sanitize(height, 16, 500);
-  const safeLeftWidth = sanitize(leftWidth, 0, safeWidth);
-  const rightWidth = Math.max(0, safeWidth - safeLeftWidth);
+  let safeHeight = sanitize(height, 16, 500);
+
+  // Auto Width Calculation
+  const hasIcon = (iconMode === 'preset' && iconType !== 'none') || (iconMode === 'custom' && customIconUrl) || (iconMode === 'custom-svg' && customSvgContent);
+  const iconW = hasIcon ? (14 * sanitize(iconScale, 0.1, 5)) : 0;
+  const gap = hasIcon && leftText ? 6 : 0;
+  
+  // Approximate text width (Inter font average char width is ~0.55 of font size)
+  const calcTextWidth = (text, size, weight) => {
+    const baseW = (text || '').length * size * 0.55;
+    return weight === 'bold' || weight >= 700 ? baseW * 1.1 : baseW;
+  };
+
+  const lTextW = calcTextWidth(leftText, leftFontSize, leftFontWeight);
+  const rTextW = calcTextWidth(rightText, rightFontSize, rightFontWeight);
+
+  let safeLeftWidth = sanitize(leftWidth, 0, 2000);
+  let safeWidth = sanitize(width, 40, 2000);
+  let rightW = Math.max(0, safeWidth - safeLeftWidth);
+
+  if (autoWidth !== false) {
+    safeLeftWidth = Math.max(10, iconW + gap + lTextW + 24); // 12px padding each side
+    rightW = Math.max(10, rTextW + 24);
+    safeWidth = safeLeftWidth + rightW;
+  }
+
   const r = sanitize(borderRadius, 0, safeHeight / 2);
-  const iY = iconY !== undefined ? sanitize(iconY, -500, 500) : (safeHeight / 2) - (12 * sanitize(iconScale, 0.1, 5));
+  const scaleY = sanitize(iconScale, 0.1, 5);
+
+  // Smart Alignment Calculation
+  let iX = 0, iY = 0, lTextX = 0, lTextY = 0, rTextX = 0, rTextY = 0;
+
+  if (smartAlign !== false) {
+    // Center block in Left
+    const blockWidth = iconW + gap + lTextW;
+    const startX = (safeLeftWidth - blockWidth) / 2;
+    
+    iX = startX + (hasIcon ? Number(leftAlign || 0) : 0);
+    iY = (safeHeight / 2) - (12 * scaleY) + Number(leftAlignY || 0);
+    
+    lTextX = startX + iconW + gap + (lTextW / 2) + Number(leftAlign || 0);
+    lTextY = (safeHeight / 2) + (leftFontSize / 2) - (leftFontSize * 0.12) + Number(leftAlignY || 0);
+
+    // Center Right
+    rTextX = safeLeftWidth + (rightW / 2) + Number(rightAlign || 0);
+    rTextY = (safeHeight / 2) + (rightFontSize / 2) - (rightFontSize * 0.12) + Number(rightAlignY || 0);
+  } else {
+    // Legacy Manual Positioning
+    iX = sanitize(iconX, -500, 500);
+    iY = iconY !== undefined ? sanitize(iconY, -500, 500) : (safeHeight / 2) - (12 * scaleY);
+    
+    lTextX = (safeLeftWidth / 2) + (hasIcon ? 10 : 0) + Number(leftAlign || 0);
+    lTextY = (safeHeight / 2) + (leftFontSize / 2) - (leftFontSize * 0.12) + Number(leftAlignY || 0);
+    
+    rTextX = safeLeftWidth + (rightW / 2) + Number(rightAlign || 0);
+    rTextY = (safeHeight / 2) + (rightFontSize / 2) - (rightFontSize * 0.12) + Number(rightAlignY || 0);
+  }
 
   const renderIcon = () => {
     if (iconMode === 'custom-svg' && customSvgContent) {
-      return `<g data-drag="icon" style="cursor: grab;" transform="translate(${sanitize(iconX, -500, 500)}, ${iY}) scale(${sanitize(iconScale, 0.1, 5)})" fill="${escapeXml(leftTextColor)}">${customSvgContent}</g>`;
+      return `<g data-drag="icon" style="cursor: grab;" transform="translate(${iX}, ${iY}) scale(${scaleY})" fill="${escapeXml(leftTextColor)}">${customSvgContent}</g>`;
     }
     if (iconMode === 'custom' && customIconUrl) {
-      return `<image data-drag="icon" style="cursor: grab;" href="${escapeXml(customIconUrl)}" x="${sanitize(iconX, -500, 500)}" y="${iY}" height="${24 * sanitize(iconScale, 0.1, 5)}" width="${24 * sanitize(iconScale, 0.1, 5)}" />`;
+      return `<image data-drag="icon" style="cursor: grab;" href="${escapeXml(customIconUrl)}" x="${iX}" y="${iY}" height="${24 * scaleY}" width="${24 * scaleY}" />`;
     }
     if (iconMode === 'preset' && iconType !== 'none') {
       let iconSvg = '';
@@ -47,19 +98,12 @@ export const buildSVG = (config) => {
       }
       
       if (iconSvg) {
-        // Strip out the wrapping <svg> tag if present so we can wrap it in a <g> and control color
         const innerContent = iconSvg.replace(/<svg[^>]*>|<\/svg>/g, '');
-        return `<g data-drag="icon" style="cursor: grab;" transform="translate(${sanitize(iconX, -500, 500)}, ${iY}) scale(${sanitize(iconScale, 0.1, 5)})" fill="${escapeXml(leftTextColor)}">${innerContent}</g>`;
+        return `<g data-drag="icon" style="cursor: grab;" transform="translate(${iX}, ${iY}) scale(${scaleY})" fill="${escapeXml(leftTextColor)}">${innerContent}</g>`;
       }
     }
     return '';
   };
-
-  const leftFinalX = (safeLeftWidth / 2) + ((iconMode !== 'preset' || iconType !== 'none') ? 10 : 0) + Number(leftAlign || 0);
-  const leftFinalY = (safeHeight / 2) + (leftFontSize / 2) - (leftFontSize * 0.12) + Number(leftAlignY || 0);
-  
-  const rightFinalX = safeLeftWidth + (rightWidth / 2) + Number(rightAlign || 0);
-  const rightFinalY = (safeHeight / 2) + (rightFontSize / 2) - (rightFontSize * 0.12) + Number(rightAlignY || 0);
 
   const svgString = `
 <svg width="${safeWidth}" height="${safeHeight}" viewBox="0 0 ${safeWidth} ${safeHeight}" xmlns="http://www.w3.org/2000/svg">
@@ -73,13 +117,13 @@ export const buildSVG = (config) => {
   </defs>
   <g clip-path="url(#round-corner)">
     <rect width="${safeLeftWidth}" height="${safeHeight}" fill="${escapeXml(leftBg)}" />
-    <rect x="${safeLeftWidth}" width="${rightWidth}" height="${safeHeight}" fill="${useGradient ? 'url(#grad-fin)' : escapeXml(rightBg)}" />
+    <rect x="${safeLeftWidth}" width="${rightW}" height="${safeHeight}" fill="${useGradient ? 'url(#grad-fin)' : escapeXml(rightBg)}" />
     ${outlineWidth > 0 ? `<rect width="${safeWidth}" height="${safeHeight}" fill="none" stroke="${escapeXml(outlineColor)}" stroke-width="${sanitize(outlineWidth, 0, 20) * 2}" rx="${r}" />` : ''}
   </g>
   ${renderIcon()}
   <g text-anchor="middle" font-family="${escapeXml(fontFamily)}">
-    <text data-drag="leftText" style="cursor: grab;" x="${leftFinalX}" y="${leftFinalY}" fill="${escapeXml(leftTextColor)}" font-size="${sanitize(leftFontSize, 1, 100)}" font-weight="${escapeXml(leftFontWeight)}">${escapeXml(leftText)}</text>
-    <text data-drag="rightText" style="cursor: grab;" x="${rightFinalX}" y="${rightFinalY}" fill="${escapeXml(rightTextColor)}" font-size="${sanitize(rightFontSize, 1, 100)}" font-weight="${escapeXml(rightFontWeight)}">${escapeXml(rightText)}</text>
+    <text data-drag="leftText" style="cursor: grab;" x="${lTextX}" y="${lTextY}" fill="${escapeXml(leftTextColor)}" font-size="${sanitize(leftFontSize, 1, 100)}" font-weight="${escapeXml(leftFontWeight)}">${escapeXml(leftText)}</text>
+    <text data-drag="rightText" style="cursor: grab;" x="${rTextX}" y="${rTextY}" fill="${escapeXml(rightTextColor)}" font-size="${sanitize(rightFontSize, 1, 100)}" font-weight="${escapeXml(rightFontWeight)}">${escapeXml(rightText)}</text>
   </g>
 </svg>`.trim();
 

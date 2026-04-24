@@ -70,7 +70,7 @@ export const ICON_LIBRARY = {
   'github': { category: 'devtools', svg: createSimpleIcon(si.siGithub), defaultColor: `#${si.siGithub?.hex}` },
   'gitlab': { category: 'devtools', svg: createSimpleIcon(si.siGitlab), defaultColor: `#${si.siGitlab?.hex}` },
   'docker': { category: 'devtools', svg: createSimpleIcon(si.siDocker), defaultColor: `#${si.siDocker?.hex}` },
-  'vscode': { category: 'devtools', svg: createLucideIcon('Code'), defaultColor: '#007ACC' },
+  'vscode': { category: 'devtools', svg: createSimpleIcon(si.siVisualstudiocode), defaultColor: `#${si.siVisualstudiocode?.hex}` },
   'vim': { category: 'devtools', svg: createSimpleIcon(si.siVim), defaultColor: `#${si.siVim?.hex}` },
 
   // Databases
@@ -81,21 +81,21 @@ export const ICON_LIBRARY = {
   'sqlite': { category: 'databases', svg: createSimpleIcon(si.siSqlite), defaultColor: `#${si.siSqlite?.hex}` },
 
   // Cloud
-  'aws': { category: 'cloud', svg: createLucideIcon('Cloud'), defaultColor: '#FF9900' },
+  'aws': { category: 'cloud', svg: createSimpleIcon(si.siAmazonwebservices), defaultColor: `#${si.siAmazonwebservices?.hex}` },
   'gcp': { category: 'cloud', svg: createSimpleIcon(si.siGooglecloud), defaultColor: `#${si.siGooglecloud?.hex}` },
-  'azure': { category: 'cloud', svg: createLucideIcon('Cloud'), defaultColor: '#0089D6' },
+  'azure': { category: 'cloud', svg: createSimpleIcon(si.siMicrosoftazure), defaultColor: `#${si.siMicrosoftazure?.hex}` },
   'vercel': { category: 'cloud', svg: createSimpleIcon(si.siVercel), defaultColor: `#${si.siVercel?.hex}` },
   'cloudflare': { category: 'cloud', svg: createSimpleIcon(si.siCloudflare), defaultColor: `#${si.siCloudflare?.hex}` },
 
   // OS
   'linux': { category: 'os', svg: createSimpleIcon(si.siLinux), defaultColor: `#${si.siLinux?.hex}` },
   'apple': { category: 'os', svg: createSimpleIcon(si.siApple), defaultColor: `#${si.siApple?.hex}` },
-  'windows': { category: 'os', svg: createLucideIcon('Box'), defaultColor: '#0078D6' },
+  'windows': { category: 'os', svg: createSimpleIcon(si.siWindows), defaultColor: `#${si.siWindows?.hex}` },
   'ubuntu': { category: 'os', svg: createSimpleIcon(si.siUbuntu), defaultColor: `#${si.siUbuntu?.hex}` },
 
   // Social
   'twitter': { category: 'social', svg: createSimpleIcon(si.siX), defaultColor: `#${si.siX?.hex}` },
-  'linkedin': { category: 'social', svg: createLucideIcon('Zap'), defaultColor: '#0077B5' },
+  'linkedin': { category: 'social', svg: createSimpleIcon(si.siLinkedin), defaultColor: `#${si.siLinkedin?.hex}` },
   'youtube': { category: 'social', svg: createSimpleIcon(si.siYoutube), defaultColor: `#${si.siYoutube?.hex}` },
   'discord': { category: 'social', svg: createSimpleIcon(si.siDiscord), defaultColor: `#${si.siDiscord?.hex}` },
 

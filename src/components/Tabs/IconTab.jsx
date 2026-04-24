@@ -123,13 +123,13 @@ const IconTab = ({ config, update, onFileUpload }) => {
           >
             <input 
               type="file" 
-              accept=".svg" 
+              accept=".svg,.png" 
               onChange={onFileUpload} 
               style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }}
             />
             <CloudUploadIcon color="disabled" sx={{ fontSize: 32 }} />
             <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.secondary' }}>
-              UPLOAD SVG (Max 500KB)
+              UPLOAD ASSET (SVG/PNG)
             </Typography>
           </Paper>
 
