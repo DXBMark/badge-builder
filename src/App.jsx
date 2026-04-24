@@ -60,8 +60,9 @@ const App = ({ mode }) => {
   /*
    * [TS] Application State
    */
-  const [config, setConfig] = useState(BASE_PRESETS.waqtor);
+  const [config, setConfig] = useState(BASE_PRESETS[0].config);
   const [customPresets, setCustomPresets] = useState({});
+  const [customBrands, setCustomBrands] = useState({});
   const [activeTab, setActiveTab] = useState('content');
   const [toast, setToast] = useState({ open: false, message: '', severity: 'info' });
   const [showExport, setShowExport] = useState(false);
@@ -81,8 +82,11 @@ const App = ({ mode }) => {
     try {
       const stored = localStorage.getItem('ts_badge_presets_mui');
       if (stored) setCustomPresets(JSON.parse(stored));
+      
+      const storedBrands = localStorage.getItem('ts_badge_brands_mui');
+      if (storedBrands) setCustomBrands(JSON.parse(storedBrands));
     } catch(e) {
-      console.error("[TS Error] Failed to load presets", e);
+      console.error("[TS Error] Failed to load presets/brands", e);
     }
   }, []);
 
@@ -101,6 +105,22 @@ const App = ({ mode }) => {
     setCustomPresets(newPresets);
     try { localStorage.setItem('ts_badge_presets_mui', JSON.stringify(newPresets)); } catch(e) {}
   }, [customPresets]);
+
+  const saveBrand = useCallback((brand) => {
+    const newBrands = { ...customBrands, [brand.id]: brand };
+    setCustomBrands(newBrands);
+    try {
+      localStorage.setItem('ts_badge_brands_mui', JSON.stringify(newBrands));
+      setToast({ open: true, message: `Brand Kit "${brand.name}" Saved!`, severity: 'success' });
+    } catch(e) {}
+  }, [customBrands]);
+
+  const deleteBrand = useCallback((id) => {
+    const newBrands = { ...customBrands };
+    delete newBrands[id];
+    setCustomBrands(newBrands);
+    try { localStorage.setItem('ts_badge_brands_mui', JSON.stringify(newBrands)); } catch(e) {}
+  }, [customBrands]);
 
   /*
    * [TS] Computed Badge Data
@@ -289,7 +309,7 @@ const App = ({ mode }) => {
                     deletePreset={deletePreset}
                    />
                 )}
-                {activeTab === 'brand' && <BrandTab />}
+                {activeTab === 'brand' && <BrandTab config={config} update={update} customBrands={customBrands} saveBrand={saveBrand} deleteBrand={deleteBrand} />}
                 {activeTab === 'github' && (
                   <GitHubTab 
                     context={gitHubContext} 

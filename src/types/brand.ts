@@ -11,13 +11,18 @@ export type BrandKit = {
   colors: {
     primary: string;
     secondary: string;
-    accent: string;
-    background: string;
-    text: string;
+    textLight: string;
+    textDark: string;
+    gradientStart: string;
+    gradientEnd: string;
+    border: string;
   };
   typography: {
-    headingFont: string;
-    bodyFont: string;
+    fontFamily: string;
   };
-  logoUrl?: string;
+  geometry: {
+    radius: number;
+    borderWidth: number;
+  };
+  useGradient: boolean;
 };
