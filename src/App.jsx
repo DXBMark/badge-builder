@@ -221,12 +221,12 @@ const App = ({ mode }) => {
 
   return (
     <Box 
-      sx={{ minHeight: '100vh', bgcolor: 'background.default', pb: 10, transition: 'background-color 0.3s ease' }}
+      sx={{ height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', bgcolor: 'background.default', transition: 'background-color 0.3s ease' }}
       onMouseMove={handleDragMove} 
       onMouseUp={handleDragEnd}
       onMouseLeave={handleDragEnd}
     >
-      <AppBar position="static" color="inherit" elevation={0} sx={{ borderBottom: '1px solid', borderColor: 'divider', mb: 5, bgcolor: 'background.paper', transition: 'background-color 0.3s ease' }}>
+      <AppBar position="static" color="inherit" elevation={0} sx={{ flexShrink: 0, borderBottom: '1px solid', borderColor: 'divider', mb: 1, bgcolor: 'background.paper', transition: 'background-color 0.3s ease' }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters sx={{ justifyContent: 'space-between', py: 1 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -269,93 +269,72 @@ const App = ({ mode }) => {
         </Container>
       </AppBar>
 
-      <Container maxWidth="xl">
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '7fr 5fr' }, gap: 4 }}>
-          {/* Main workspace area */}
-          <Box>
-            <Stack spacing={4}>
-              <LivePreview 
-                svg={badgeData.svg} 
-                onDragStart={handleDragStart} 
-                dragState={dragState}
-                statusMsg={toast.open ? toast.message : ''} 
-                onCopy={handleCopy}
-              />
-              <SvgSource 
-                svg={badgeData.svg} 
-                config={config}
-                onCopy={handleCopy} 
-              />
-            </Stack>
-          </Box>
+      {/* [TS] One-page content — fills remaining viewport height after AppBar */}
+      <Box sx={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
+        <Container maxWidth="xl" sx={{ height: '100%', display: 'flex', flexDirection: 'column', py: 2 }}>
+          <Box sx={{ flex: 1, minHeight: 0, display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '7fr 5fr' }, gap: 4 }}>
 
-          {/* Configuration sidebar */}
-          <Box>
-            <Stack spacing={3}>
-            <Paper sx={{ borderRadius: 4, overflow: 'hidden', position: 'sticky', top: 32 }}>
-              <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
-              
-              <Box sx={{ p: 4, maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
-                {activeTab === 'content' && <ContentTab config={config} update={update} />}
-                {activeTab === 'layout' && <LayoutTab config={config} update={update} />}
-                {activeTab === 'style' && <StyleTab config={config} update={update} />}
-                {activeTab === 'icon' && <IconTab config={config} update={update} onFileUpload={handleFileUpload} />}
-                {activeTab === 'presets' && (
-                   <PresetsTab 
-                    setConfig={setConfig} 
-                    customPresets={customPresets} 
-                    savePreset={savePreset}
-                    deletePreset={deletePreset}
-                   />
-                )}
-                {activeTab === 'brand' && <BrandTab config={config} update={update} customBrands={customBrands} saveBrand={saveBrand} deleteBrand={deleteBrand} />}
-                {activeTab === 'github' && (
-                  <GitHubTab 
-                    context={gitHubContext} 
-                    setContext={setGitHubContext} 
-                    onCopy={handleCopy} 
-                  />
-                )}
-                {activeTab === 'bulk' && (
-                  <BulkTab 
-                    config={config} 
-                    onCopy={handleCopy} 
-                  />
-                )}
+            {/* Left column — Preview + Source */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, minHeight: 0, overflow: 'hidden' }}>
+              <Box sx={{ flexShrink: 0 }}>
+                <LivePreview 
+                  svg={badgeData.svg} 
+                  onDragStart={handleDragStart} 
+                  dragState={dragState}
+                  statusMsg={toast.open ? toast.message : ''} 
+                  onCopy={handleCopy}
+                />
               </Box>
-            </Paper>
-            <DiagnosticsPanel results={diagnostics} />
-            </Stack>
-          </Box>
-        </Box>
-
-        {/* [TS] Footer Fix */}
-        <Box sx={{ mt: 10, pt: 8, borderTop: '1px solid', borderColor: 'divider', textAlign: 'center' }}>
-          <Stack spacing={2} sx={{ alignItems: 'center' }}>
-            <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600 }}>
-              © 2026 Badge Builder Pro by DXBMark Ltd. All rights reserved.
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 3, justifyContent: 'center', alignItems: 'center' }}>
-              <Link 
-                href="https://portfolio.dxbmark.com/" 
-                target="_blank" 
-                underline="hover" 
-                sx={{ color: 'text.primary', fontWeight: 800, fontSize: '0.875rem' }}
-              >
-                Built with ❤️ by [Tariq Said]
-              </Link>
-              <Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />
-              <Link 
-                href="https://github.com/DXBMark/badge-builder.git" 
-                target="_blank" 
-                sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'text.primary', fontWeight: 700, underline: 'none' }}
-              >
-                <GitHubIcon fontSize="small" /> Source Code
-              </Link>
+              <Box sx={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
+                <SvgSource 
+                  svg={badgeData.svg} 
+                  config={config}
+                  onCopy={handleCopy} 
+                />
+              </Box>
             </Box>
-          </Stack>
-        </Box>
-      </Container>
+
+            {/* Right column — Editor + Diagnostics (no sticky, fully contained) */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, minHeight: 0, overflow: 'hidden' }}>
+              <Paper sx={{ flex: 1, minHeight: 0, borderRadius: 4, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
+                <Box sx={{ flex: 1, minHeight: 0, p: 3, overflowY: 'auto' }}>
+                  {activeTab === 'content' && <ContentTab config={config} update={update} />}
+                  {activeTab === 'layout' && <LayoutTab config={config} update={update} />}
+                  {activeTab === 'style' && <StyleTab config={config} update={update} />}
+                  {activeTab === 'icon' && <IconTab config={config} update={update} onFileUpload={handleFileUpload} />}
+                  {activeTab === 'presets' && (
+                    <PresetsTab 
+                      setConfig={setConfig} 
+                      customPresets={customPresets} 
+                      savePreset={savePreset}
+                      deletePreset={deletePreset}
+                    />
+                  )}
+                  {activeTab === 'brand' && <BrandTab config={config} update={update} customBrands={customBrands} saveBrand={saveBrand} deleteBrand={deleteBrand} />}
+                  {activeTab === 'github' && (
+                    <GitHubTab 
+                      context={gitHubContext} 
+                      setContext={setGitHubContext} 
+                      onCopy={handleCopy} 
+                    />
+                  )}
+                  {activeTab === 'bulk' && (
+                    <BulkTab 
+                      config={config} 
+                      onCopy={handleCopy} 
+                    />
+                  )}
+                </Box>
+              </Paper>
+              <Box sx={{ flexShrink: 0 }}>
+                <DiagnosticsPanel results={diagnostics} />
+              </Box>
+            </Box>
+
+          </Box>
+        </Container>
+      </Box>
 
       <ExportModal 
         show={showExport} 

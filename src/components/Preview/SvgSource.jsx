@@ -43,7 +43,7 @@ const SvgSource = ({ svg, config, onCopy }) => {
   const activeContent = snippets[activeTab];
 
   return (
-    <Paper sx={{ bgcolor: '#161C24', borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+    <Paper sx={{ bgcolor: '#161C24', borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)', height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* Tab Navigation */}
       <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.06)', bgcolor: '#0D1117' }}>
         <Tabs 
@@ -110,7 +110,7 @@ const SvgSource = ({ svg, config, onCopy }) => {
       </Box>
 
       {/* Code area */}
-      <Box sx={{ p: 2, maxHeight: 200, overflowY: 'auto' }}>
+      <Box sx={{ p: 2, flex: 1, minHeight: 0, overflowY: 'auto' }}>
         <Box component="pre" sx={{ m: 0, fontFamily: '"Fira Code", monospace', fontSize: '0.7rem', lineHeight: 1.6, color: '#919EAB', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
           {activeContent}
         </Box>

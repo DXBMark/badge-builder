@@ -104,7 +104,7 @@ const LivePreview = ({ svg, onDragStart, dragState, statusMsg, onCopy }) => {
         alignItems: 'center', 
         justifyContent: 'center',
         background: BACKGROUNDS[bgMode],
-        minHeight: 340,
+        minHeight: 200,
         cursor: isDragging ? 'grabbing' : 'default',
         position: 'relative',
         transition: 'background 0.3s ease',
