@@ -7,6 +7,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { Paper, Box, Typography, IconButton, Tooltip, Chip, Tabs, Tab, Button } from '@mui/material';
+import { alpha, useTheme } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CodeIcon from '@mui/icons-material/Code';
@@ -15,6 +16,24 @@ import StorageIcon from '@mui/icons-material/Storage';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 const SvgSource = ({ svg, config, onCopy }) => {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
+
+  const sourceTheme = {
+    rootBg: isDark ? theme.palette.grey[900] : theme.palette.grey[50],
+    headerBg: isDark ? alpha(theme.palette.common.black, 0.28) : theme.palette.common.white,
+    tabsBg: isDark ? alpha(theme.palette.common.black, 0.42) : theme.palette.grey[100],
+    codeText: isDark ? theme.palette.grey[300] : theme.palette.grey[900],
+    mutedText: isDark ? theme.palette.grey[400] : theme.palette.grey[600],
+    strongText: isDark ? theme.palette.grey[100] : theme.palette.grey[900],
+    border: alpha(theme.palette.divider, isDark ? 0.75 : 1),
+    subtleBorder: alpha(theme.palette.divider, isDark ? 0.55 : 0.85),
+    hoverBg: alpha(theme.palette.primary.main, isDark ? 0.16 : 0.08),
+    selectedBg: alpha(theme.palette.primary.main, isDark ? 0.18 : 0.1),
+    chipBg: alpha(theme.palette.primary.main, isDark ? 0.16 : 0.08),
+    copyBg: alpha(theme.palette.primary.main, isDark ? 0.18 : 0.1),
+  };
+
   const [activeTab, setActiveTab] = React.useState('svg');
   const [expanded, setExpanded] = useState(false);
 
@@ -48,50 +67,99 @@ const SvgSource = ({ svg, config, onCopy }) => {
   const activeContent = snippets[activeTab];
 
   return (
-    <Paper sx={{ bgcolor: '#161C24', borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column' }}>
-      {/* Tab Navigation */}
-      <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.06)', bgcolor: '#0D1117' }}>
-        <Tabs 
-          value={activeTab} 
+    <Paper
+      sx={{
+        bgcolor: sourceTheme.rootBg,
+        borderRadius: 3,
+        overflow: 'hidden',
+        border: '1px solid',
+        borderColor: sourceTheme.border,
+        display: 'flex',
+        flexDirection: 'column',
+        boxShadow: theme.shadows[isDark ? 2 : 4],
+      }}
+    >
+      <Box
+        sx={{
+          borderBottom: '1px solid',
+          borderColor: sourceTheme.subtleBorder,
+          bgcolor: sourceTheme.tabsBg,
+        }}
+      >
+        <Tabs
+          value={activeTab}
           onChange={(_, val) => setActiveTab(val)}
           variant="scrollable"
           scrollButtons="auto"
           sx={{
-            minHeight: 40,
+            minHeight: 44,
             '& .MuiTab-root': {
-              minHeight: 40,
-              fontSize: '0.6rem',
-              color: '#4D5F70',
-              fontWeight: 800,
-              '&.Mui-selected': { color: 'primary.main' }
+              minHeight: 44,
+              px: 2,
+              fontSize: '0.68rem',
+              color: sourceTheme.mutedText,
+              fontWeight: 900,
+              letterSpacing: '0.04em',
+              opacity: 1,
+              '& svg': {
+                color: sourceTheme.mutedText,
+              },
+              '&:hover': {
+                color: sourceTheme.strongText,
+                bgcolor: sourceTheme.hoverBg,
+              },
+              '&.Mui-selected': {
+                color: theme.palette.primary.main,
+                bgcolor: sourceTheme.selectedBg,
+              },
+              '&.Mui-selected svg': {
+                color: theme.palette.primary.main,
+              },
             },
-            '& .MuiTabs-indicator': { height: 3, borderRadius: '3px 3px 0 0' }
+            '& .MuiTabs-indicator': {
+              height: 3,
+              borderRadius: '3px 3px 0 0',
+              bgcolor: theme.palette.primary.main,
+            },
           }}
         >
-          <Tab value="svg" label="SVG" icon={<CodeIcon sx={{ fontSize: 14 }} />} iconPosition="start" />
-          <Tab value="markdown" label="MARKDOWN" icon={<DescriptionIcon sx={{ fontSize: 14 }} />} iconPosition="start" />
-          <Tab value="html" label="HTML" icon={<CodeIcon sx={{ fontSize: 14 }} />} iconPosition="start" />
-          <Tab value="json" label="JSON" icon={<StorageIcon sx={{ fontSize: 14 }} />} iconPosition="start" />
-          <Tab value="github" label="GH README" icon={<MenuBookIcon sx={{ fontSize: 14 }} />} iconPosition="start" />
+          <Tab value="svg" label="SVG" icon={<CodeIcon sx={{ fontSize: 15 }} />} iconPosition="start" />
+          <Tab value="markdown" label="MARKDOWN" icon={<DescriptionIcon sx={{ fontSize: 15 }} />} iconPosition="start" />
+          <Tab value="html" label="HTML" icon={<CodeIcon sx={{ fontSize: 15 }} />} iconPosition="start" />
+          <Tab value="json" label="JSON" icon={<StorageIcon sx={{ fontSize: 15 }} />} iconPosition="start" />
+          <Tab value="github" label="GH README" icon={<MenuBookIcon sx={{ fontSize: 15 }} />} iconPosition="start" />
         </Tabs>
       </Box>
 
-      {/* Header bar with meta info */}
-      <Box sx={{
-        px: 3,
-        py: 1,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        bgcolor: 'rgba(0,0,0,0.1)'
-      }}>
+      <Box
+        sx={{
+          px: 3,
+          py: 1.25,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          bgcolor: sourceTheme.headerBg,
+          borderBottom: '1px solid',
+          borderColor: sourceTheme.subtleBorder,
+        }}
+      >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-           <Box sx={{ display: 'flex', gap: 0.5 }}>
-            <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#FF5F57' }} />
-            <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#FEBC2E' }} />
-            <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#28C840' }} />
+          <Box sx={{ display: 'flex', gap: 0.5 }}>
+            <Box sx={{ width: 9, height: 9, borderRadius: '50%', bgcolor: 'error.main' }} />
+            <Box sx={{ width: 9, height: 9, borderRadius: '50%', bgcolor: 'warning.main' }} />
+            <Box sx={{ width: 9, height: 9, borderRadius: '50%', bgcolor: 'success.main' }} />
           </Box>
-          <Typography variant="caption" sx={{ color: '#4D5F70', fontWeight: 800, textTransform: 'uppercase', ml: 1 }}>
+
+          <Typography
+            variant="caption"
+            sx={{
+              color: sourceTheme.strongText,
+              fontWeight: 900,
+              textTransform: 'uppercase',
+              ml: 1,
+              letterSpacing: '0.08em',
+            }}
+          >
             output.{activeTab === 'json' ? 'json' : activeTab === 'markdown' ? 'md' : activeTab}
           </Typography>
         </Box>
@@ -100,45 +168,113 @@ const SvgSource = ({ svg, config, onCopy }) => {
           <Chip
             label={`${new Blob([activeContent]).size} B`}
             size="small"
-            sx={{ height: 18, fontSize: '0.5rem', fontWeight: 900, bgcolor: 'rgba(255,255,255,0.05)', color: '#4D5F70', border: '1px solid rgba(255,255,255,0.1)' }}
+            sx={{
+              height: 22,
+              fontSize: '0.6rem',
+              fontWeight: 900,
+              bgcolor: sourceTheme.chipBg,
+              color: theme.palette.primary.main,
+              border: '1px solid',
+              borderColor: alpha(theme.palette.primary.main, 0.28),
+            }}
           />
+
           <Tooltip title={`Copy ${activeTab.toUpperCase()}`} placement="top">
             <IconButton
               size="small"
               onClick={() => onCopy(activeContent, activeTab.toUpperCase())}
-              sx={{ color: 'primary.main', bgcolor: 'rgba(0,171,85,0.1)', '&:hover': { bgcolor: 'rgba(0,171,85,0.2)' }, width: 24, height: 24 }}
+              aria-label={`Copy ${activeTab.toUpperCase()}`}
+              sx={{
+                color: theme.palette.primary.main,
+                bgcolor: sourceTheme.copyBg,
+                border: '1px solid',
+                borderColor: alpha(theme.palette.primary.main, 0.28),
+                '&:hover': {
+                  bgcolor: alpha(theme.palette.primary.main, isDark ? 0.28 : 0.16),
+                },
+                width: 28,
+                height: 28,
+              }}
             >
-              <ContentCopyIcon sx={{ fontSize: 12 }} />
+              <ContentCopyIcon sx={{ fontSize: 13 }} />
             </IconButton>
           </Tooltip>
         </Box>
       </Box>
 
-      {/* Code area — collapsed or expanded */}
-      <Box sx={{ position: 'relative' }}>
+      <Box sx={{ position: 'relative', bgcolor: sourceTheme.rootBg }}>
         <Box
           sx={{
-            p: 2,
-            maxHeight: expanded ? 'none' : 130,
+            p: 2.25,
+            maxHeight: expanded ? 'none' : 150,
             overflow: 'hidden',
             transition: 'max-height 0.3s ease',
           }}
         >
-          <Box component="pre" sx={{ m: 0, fontFamily: '"Fira Code", monospace', fontSize: '0.7rem', lineHeight: 1.6, color: '#919EAB', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+          <Box
+            component="pre"
+            sx={{
+              m: 0,
+              fontFamily: '"Fira Code", monospace',
+              fontSize: '0.76rem',
+              lineHeight: 1.75,
+              color: sourceTheme.codeText,
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              overflowWrap: 'anywhere',
+            }}
+          >
             {activeContent}
           </Box>
         </Box>
 
-        {/* Gradient fade + View More / Collapse */}
         {!expanded && (
-          <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 60, background: 'linear-gradient(transparent, #161C24)', pointerEvents: 'none' }} />
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: 36,
+              left: 0,
+              right: 0,
+              height: 70,
+              background: `linear-gradient(${alpha(sourceTheme.rootBg, 0)}, ${sourceTheme.rootBg})`,
+              pointerEvents: 'none',
+            }}
+          />
         )}
-        <Box sx={{ display: 'flex', justifyContent: 'center', py: 0.5, bgcolor: '#161C24' }}>
+
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            py: 0.75,
+            bgcolor: sourceTheme.rootBg,
+            borderTop: '1px solid',
+            borderColor: sourceTheme.subtleBorder,
+          }}
+        >
           <Button
             size="small"
             onClick={() => setExpanded(v => !v)}
-            endIcon={<ExpandMoreIcon sx={{ fontSize: 14, transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />}
-            sx={{ fontSize: '0.6rem', fontWeight: 800, color: '#4D5F70', textTransform: 'uppercase', letterSpacing: '0.08em', '&:hover': { color: 'primary.main' } }}
+            endIcon={
+              <ExpandMoreIcon
+                sx={{
+                  fontSize: 16,
+                  transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.2s',
+                }}
+              />
+            }
+            sx={{
+              fontSize: '0.68rem',
+              fontWeight: 900,
+              color: sourceTheme.mutedText,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              '&:hover': {
+                color: theme.palette.primary.main,
+                bgcolor: sourceTheme.hoverBg,
+              },
+            }}
           >
             {expanded ? 'Collapse' : 'View Full'}
           </Button>
