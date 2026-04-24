@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": false,
   "type": "module",
-  "description": "A powerful SVG Badge Builder with full visual control for creating custom GitHub README badges.",
+  "description": "Generate your developer profile badges. A free tool to design professional badges for GitHub README files, tech stacks, and branding.",
   "author": "Tariq Said",
   "license": "MIT",
   "homepage": "https://dxbmark.github.io/badge-builder/",

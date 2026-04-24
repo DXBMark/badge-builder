@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { Box, Typography, ToggleButtonGroup, ToggleButton, Slider, Paper, Button, Stack, Tooltip } from '@mui/material';
+import { Box, Typography, ToggleButtonGroup, ToggleButton, Slider, Paper, Button, Stack, Tooltip, IconButton } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ICON_MAP } from '../../constants/icons';

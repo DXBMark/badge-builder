@@ -134,6 +134,13 @@ const App = ({ mode }) => {
   const handleFileUpload = useCallback((e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    // [TS] Limit size to 500KB
+    if (file.size > 500 * 1024) {
+      setToast({ open: true, message: '[TS Error] File too large! Max 500KB allowed.', severity: 'error' });
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (event) => {
       if (file.type === 'image/svg+xml') {
@@ -153,7 +160,12 @@ const App = ({ mode }) => {
       setConfig(prev => ({ ...prev, customIconUrl: event.target.result, iconMode: 'custom' }));
       setToast({ open: true, message: 'Image Icon Loaded', severity: 'success' });
     };
-    reader.readAsDataURL(file);
+
+    if (file.type === 'image/svg+xml') {
+      reader.readAsText(file);
+    } else {
+      reader.readAsDataURL(file);
+    }
   }, []);
 
   const update = useCallback((key, val) => {
@@ -203,7 +215,7 @@ const App = ({ mode }) => {
               </IconButton>
               <IconButton 
                 component={Link} 
-                href="https://github.com/tariqsaidofficial/badge-builder.git" 
+                href="https://github.com/DXBMark/badge-builder.git" 
                 target="_blank"
                 sx={{ color: 'text.secondary', '&:hover': { color: 'primary.main', bgcolor: 'action.hover' } }}
               >
