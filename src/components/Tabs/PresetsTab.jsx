@@ -60,7 +60,7 @@ const PresetCard = ({ preset, onApply, onDelete, isCustom = false }) => {
       </Box>
 
       <Box>
-        <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+        <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <Box>
             <Typography variant="caption" sx={{ fontWeight: 900, color: 'primary.main', textTransform: 'uppercase', fontSize: '0.6rem' }}>
               {preset.category}

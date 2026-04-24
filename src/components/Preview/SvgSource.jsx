@@ -17,15 +17,24 @@ const SvgSource = ({ svg, config, onCopy }) => {
   const [activeTab, setActiveTab] = React.useState('svg');
 
   const snippets = useMemo(() => {
-    const md = `![${config.content.label}](https://img.shields.io/badge/${encodeURIComponent(config.content.label)}-${encodeURIComponent(config.content.value)}-${config.colors.valueBg.replace('#', '')})`;
-    const html = `<img src="data:image/svg+xml;base64,${btoa(svg)}" alt="${config.content.label}" />`;
+    const md = `![${config.leftText}](https://img.shields.io/badge/${encodeURIComponent(config.leftText)}-${encodeURIComponent(config.rightText)}-${config.rightBg.replace('#', '')})`;
+    let htmlSnippet = '';
+    try {
+      const bytes = new TextEncoder().encode(svg);
+      const binString = Array.from(bytes, (byte) => String.fromCharCode(byte)).join("");
+      const safeB64 = btoa(binString);
+      htmlSnippet = `<img src="data:image/svg+xml;base64,${safeB64}" alt="${config.leftText}" />`;
+    } catch (e) {
+      console.error("[TS Error] SvgSource encoding failed:", e);
+      htmlSnippet = '<!-- Error: Unable to encode SVG to Base64 -->';
+    }
     const json = JSON.stringify(config, null, 2);
-    const github = `[![${config.content.label}](https://raw.githubusercontent.com/DXBMark/badge-builder/main/badge.svg)](https://github.com/DXBMark/badge-builder)`;
+    const github = `[![${config.leftText}](https://raw.githubusercontent.com/DXBMark/badge-builder/main/badge.svg)](https://github.com/DXBMark/badge-builder)`;
 
     return {
       svg,
       markdown: md,
-      html,
+      html: htmlSnippet,
       json,
       github
     };

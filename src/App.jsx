@@ -47,6 +47,7 @@ import StyleTab from './components/Tabs/StyleTab';
 import IconTab from './components/Tabs/IconTab';
 import PresetsTab from './components/Tabs/PresetsTab';
 import GitHubTab from './components/Tabs/GitHubTab';
+import BulkTab from './components/Tabs/BulkTab';
 import ExportModal from './components/ExportModal';
 import DiagnosticsPanel from './components/DiagnosticsPanel';
 import BrandTab from './components/Tabs/BrandTab';
@@ -208,7 +209,11 @@ const App = ({ mode }) => {
   const handleCopySnippet = (type) => {
     let text = '';
     if (type === 'MARKDOWN') text = `![${config.leftText}](https://img.shields.io/badge/${encodeURIComponent(config.leftText)}-${encodeURIComponent(config.rightText)}-${config.rightBg.replace('#', '')})`;
-    else if (type === 'HTML') text = `<img src="data:image/svg+xml;base64,${btoa(badgeData.svg)}" alt="${config.leftText}" />`;
+    else if (type === 'HTML') {
+      const bytes = new TextEncoder().encode(badgeData.svg);
+      const binString = Array.from(bytes, (byte) => String.fromCharCode(byte)).join("");
+      text = `<img src="data:image/svg+xml;base64,${btoa(binString)}" alt="${config.leftText}" />`;
+    }
     else if (type === 'JSON') text = JSON.stringify(config, null, 2);
     
     handleCopy(text, type);
@@ -281,6 +286,7 @@ const App = ({ mode }) => {
                 onDragStart={handleDragStart} 
                 dragState={dragState}
                 statusMsg={toast.open ? toast.message : ''} 
+                onCopy={handleCopy}
               />
               <SvgSource 
                 svg={badgeData.svg} 
@@ -314,6 +320,12 @@ const App = ({ mode }) => {
                   <GitHubTab 
                     context={gitHubContext} 
                     setContext={setGitHubContext} 
+                    onCopy={handleCopy} 
+                  />
+                )}
+                {activeTab === 'bulk' && (
+                  <BulkTab 
+                    config={config} 
                     onCopy={handleCopy} 
                   />
                 )}

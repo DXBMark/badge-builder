@@ -5,9 +5,9 @@
  * Notes: Follow TS conventions.
  */
 
-import { BadgeIconConfig } from './icon';
+import type { BadgeIconConfig } from './icon';
 
-export type BadgeConfig = {
+export interface BadgeConfig {
   id: string;
   name: string;
 

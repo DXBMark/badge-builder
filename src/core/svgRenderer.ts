@@ -5,7 +5,7 @@
  * Notes: Decoupled from React, pure function.
  */
 
-import { BadgeConfig } from '../types/badge';
+import type { BadgeConfig } from '../types/badge';
 import { ICON_MAP } from '../constants/icons';
 import { escapeXml, sanitize } from '../utils/sanitize';
 

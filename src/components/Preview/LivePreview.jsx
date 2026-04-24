@@ -9,7 +9,7 @@ import React from 'react';
 import { 
   Paper, Box, Typography, Fade, IconButton, 
   Tooltip, ToggleButtonGroup, ToggleButton, Stack,
-  Divider
+  Divider, Button
 } from '@mui/material';
 import ZoomIn from '@mui/icons-material/ZoomIn';
 import ZoomOut from '@mui/icons-material/ZoomOut';
@@ -37,10 +37,10 @@ const LivePreview = ({ svg, onDragStart, dragState, statusMsg, onCopy }) => {
   const handleZoom = (delta) => setZoom(prev => Math.min(Math.max(prev + delta, 0.5), 3));
 
   return (
-  <Paper sx={{ overflow: 'hidden', borderRadius: 4, border: isDragging ? '2px solid' : '2px solid transparent', borderColor: isDragging ? 'primary.main' : 'transparent', transition: 'border-color 0.2s' }}>
+  <Paper sx={{ overflow: 'hidden', borderRadius: 4, border: isDragging ? '2px solid' : '1px solid', borderColor: isDragging ? 'primary.main' : 'divider', transition: 'all 0.2s' }}>
     <Box sx={{ 
-      px: 2, 
-      py: 1, 
+      px: 3, 
+      py: 1.5, 
       borderBottom: '1px solid',
       borderColor: 'divider',
       display: 'flex',
@@ -48,18 +48,17 @@ const LivePreview = ({ svg, onDragStart, dragState, statusMsg, onCopy }) => {
       alignItems: 'center',
       bgcolor: 'background.neutral'
     }}>
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
         <Typography variant="overline" sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 900, color: isDragging ? 'primary.main' : 'text.secondary', mr: 2 }}>
-          <Icon name="layout" size={12}/> {isDragging ? 'DRAGGING...' : 'LIVE PREVIEW'}
+          {isDragging ? 'DRAGGING...' : 'PREVIEW'}
         </Typography>
         
         <Divider orientation="vertical" flexItem sx={{ mx: 1, height: 20, my: 'auto' }} />
         
         <Stack direction="row" spacing={0.5}>
           <Tooltip title="Zoom Out"><IconButton size="small" onClick={() => handleZoom(-0.2)}><ZoomOut fontSize="inherit" /></IconButton></Tooltip>
-          <Typography variant="caption" sx={{ minWidth: 30, textAlign: 'center', lineHeight: '28px', fontWeight: 800 }}>{Math.round(zoom * 100)}%</Typography>
+          <Typography variant="caption" sx={{ minWidth: 35, textAlign: 'center', lineHeight: '28px', fontWeight: 900, color: 'primary.main' }}>{Math.round(zoom * 100)}%</Typography>
           <Tooltip title="Zoom In"><IconButton size="small" onClick={() => handleZoom(0.2)}><ZoomIn fontSize="inherit" /></IconButton></Tooltip>
-          <Tooltip title="Reset Zoom"><IconButton size="small" onClick={() => setZoom(1)}><RestartAlt fontSize="inherit" /></IconButton></Tooltip>
         </Stack>
 
         <Divider orientation="vertical" flexItem sx={{ mx: 1, height: 20, my: 'auto' }} />
@@ -69,18 +68,18 @@ const LivePreview = ({ svg, onDragStart, dragState, statusMsg, onCopy }) => {
           value={bgMode}
           exclusive
           onChange={(_, val) => val && setBgMode(val)}
-          sx={{ height: 28 }}
+          sx={{ height: 28, '& .MuiToggleButton-root': { px: 1.5, fontSize: '0.65rem', fontWeight: 800 } }}
         >
-          <Tooltip title="Transparent"><ToggleButton value="transparent" sx={{ px: 1 }}>TR</ToggleButton></Tooltip>
-          <Tooltip title="Light"><ToggleButton value="light" sx={{ px: 1 }}>LT</ToggleButton></Tooltip>
-          <Tooltip title="Dark"><ToggleButton value="dark" sx={{ px: 1 }}>DK</ToggleButton></Tooltip>
-          <Tooltip title="GitHub README"><ToggleButton value="readme" sx={{ px: 1 }}>GH</ToggleButton></Tooltip>
+          <ToggleButton value="transparent">GRID</ToggleButton>
+          <ToggleButton value="light">LIGHT</ToggleButton>
+          <ToggleButton value="dark">DARK</ToggleButton>
+          <ToggleButton value="readme">GITHUB</ToggleButton>
         </ToggleButtonGroup>
       </Stack>
 
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
         <Fade in={!!statusMsg}>
-          <Typography variant="caption" sx={{ fontWeight: 800, color: 'primary.main' }}>
+          <Typography variant="caption" sx={{ fontWeight: 800, color: 'primary.main', mr: 2 }}>
             {statusMsg}
           </Typography>
         </Fade>
@@ -100,12 +99,12 @@ const LivePreview = ({ svg, onDragStart, dragState, statusMsg, onCopy }) => {
 
     <Box 
       sx={{ 
-        p: 4, 
+        p: 0, 
         display: 'flex', 
         alignItems: 'center', 
         justifyContent: 'center',
         background: BACKGROUNDS[bgMode],
-        minHeight: 300,
+        minHeight: 340,
         cursor: isDragging ? 'grabbing' : 'default',
         position: 'relative',
         transition: 'background 0.3s ease',
@@ -116,54 +115,78 @@ const LivePreview = ({ svg, onDragStart, dragState, statusMsg, onCopy }) => {
       <Box sx={{ 
         transform: `scale(${zoom})`,
         transition: 'transform 0.2s ease, filter 0.3s',
-        filter: isDragging ? 'drop-shadow(0 30px 50px rgba(0,0,0,0.2))' : 'drop-shadow(0 10px 20px rgba(0,0,0,0.1))',
+        filter: isDragging ? 'drop-shadow(0 30px 50px rgba(0,0,0,0.3))' : 'none',
         position: 'relative',
-        p: previewMode === 'single' ? 0 : 4,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 2,
+        p: previewMode === 'single' ? 0 : 6,
         bgcolor: previewMode === 'readme' ? '#ffffff' : 'transparent',
         borderRadius: previewMode === 'readme' ? 2 : 0,
-        boxShadow: previewMode === 'readme' ? '0 0 20px rgba(0,0,0,0.05)' : 'none',
-        maxWidth: '100%'
+        boxShadow: previewMode === 'readme' ? '0 0 40px rgba(0,0,0,0.1)' : 'none',
+        border: previewMode === 'readme' ? '1px solid #e1e4e8' : 'none',
+        maxWidth: '90%'
       }}>
         {/* Overlay grid when dragging */}
         {isDragging && (
           <Box sx={{ 
             position: 'absolute', inset: -20, 
-            border: '1px dashed', borderColor: 'primary.main', 
-            borderRadius: 2, pointerEvents: 'none', opacity: 0.3,
-            background: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.01) 10px, rgba(0,0,0,0.01) 20px)'
+            border: '2px dashed', borderColor: 'primary.main', 
+            borderRadius: 2, pointerEvents: 'none', opacity: 0.5,
+            background: 'rgba(0,171,85,0.02)'
           }} />
         )}
         
         {previewMode === 'readme' && (
-          <Box sx={{ mb: 2, borderBottom: '1px solid #e1e4e8', pb: 1, width: 400 }}>
-            <Typography sx={{ fontWeight: 600, fontSize: 14, color: '#0366d6' }}>README.md</Typography>
+          <Box sx={{ mb: 2, borderBottom: '1px solid #e1e4e8', pb: 1, width: '100%', minWidth: 300 }}>
+            <Typography sx={{ fontWeight: 600, fontSize: 14, color: '#0366d6', display: 'flex', alignItems: 'center', gap: 1 }}>
+              <MenuBookIcon sx={{ fontSize: 16 }} /> README.md
+            </Typography>
           </Box>
         )}
 
-        <div dangerouslySetInnerHTML={{ __html: svg }} style={{ pointerEvents: isDragging ? 'none' : 'auto' }} />
-      </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div dangerouslySetInnerHTML={{ __html: svg }} style={{ pointerEvents: isDragging ? 'none' : 'auto' }} />
+        </Box>
 
-      {/* Quick Actions Overlay */}
-      <Stack 
-        direction="row" 
-        spacing={1} 
-        sx={{ 
-          position: 'absolute', 
-          bottom: 16, 
-          right: 16, 
-          bgcolor: 'rgba(255,255,255,0.8)', 
-          backdropFilter: 'blur(4px)',
-          p: 0.5, 
-          borderRadius: 2,
-          border: '1px solid',
-          borderColor: 'divider'
-        }}
+        {previewMode === 'profile' && (
+           <Box sx={{ mt: 3, width: '100%', display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'center', opacity: 0.5 }}>
+             <Box sx={{ width: 40, height: 40, borderRadius: '50%', bgcolor: 'divider' }} />
+             <Box sx={{ width: 100, height: 10, borderRadius: 1, bgcolor: 'divider', mt: 1.5 }} />
+           </Box>
+        )}
+      </Box>
+    </Box>
+
+    <Box sx={{ px: 3, py: 1.5, bgcolor: 'background.neutral', borderTop: '1px solid', borderColor: 'divider', display: 'flex', gap: 2 }}>
+      <Button 
+        size="small" 
+        variant="outlined" 
+        startIcon={<ContentCopy fontSize="inherit" />}
+        onClick={() => onCopy(svg, 'SVG Code')}
+        sx={{ fontWeight: 800, fontSize: '0.65rem' }}
       >
-        <Tooltip title="Copy SVG Code"><IconButton size="small" onClick={() => onCopy(svg, 'SVG')}><ContentCopy fontSize="inherit" /></IconButton></Tooltip>
-        <Tooltip title="Preview Fullscreen"><IconButton size="small"><Visibility fontSize="inherit" /></IconButton></Tooltip>
-      </Stack>
+        Copy SVG
+      </Button>
+      <Button 
+        size="small" 
+        variant="outlined" 
+        startIcon={<ContentCopy fontSize="inherit" />}
+        onClick={() => {
+           // Basic MD copy for single badge
+           const md = `![Badge](https://img.shields.io/badge/Preview-Badge-green)`;
+           onCopy(md, 'Markdown Link');
+        }}
+        sx={{ fontWeight: 800, fontSize: '0.65rem' }}
+      >
+        Copy Markdown
+      </Button>
+      <Divider orientation="vertical" flexItem />
+      <IconButton size="small" onClick={() => setZoom(1)} sx={{ ml: 'auto' }}><RestartAlt fontSize="small" /></IconButton>
     </Box>
   </Paper>
-)};
+  );
+};
 
 export default LivePreview;

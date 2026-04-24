@@ -7,7 +7,7 @@
 
 export type IconMode = 'preset' | 'custom' | 'custom-svg' | 'none';
 
-export type BadgeIconConfig = {
+export interface BadgeIconConfig {
   type: string;
   mode: IconMode;
   url?: string;

@@ -70,7 +70,7 @@ export const ICON_LIBRARY = {
   'github': { category: 'devtools', svg: createSimpleIcon(si.siGithub), defaultColor: `#${si.siGithub?.hex}` },
   'gitlab': { category: 'devtools', svg: createSimpleIcon(si.siGitlab), defaultColor: `#${si.siGitlab?.hex}` },
   'docker': { category: 'devtools', svg: createSimpleIcon(si.siDocker), defaultColor: `#${si.siDocker?.hex}` },
-  'vscode': { category: 'devtools', svg: createSimpleIcon(si.siVisualstudiocode), defaultColor: `#${si.siVisualstudiocode?.hex}` },
+  'vscode': { category: 'devtools', svg: createLucideIcon('Code'), defaultColor: '#007ACC' },
   'vim': { category: 'devtools', svg: createSimpleIcon(si.siVim), defaultColor: `#${si.siVim?.hex}` },
 
   // Databases
@@ -81,21 +81,21 @@ export const ICON_LIBRARY = {
   'sqlite': { category: 'databases', svg: createSimpleIcon(si.siSqlite), defaultColor: `#${si.siSqlite?.hex}` },
 
   // Cloud
-  'aws': { category: 'cloud', svg: createSimpleIcon(si.siAmazonwebservices), defaultColor: `#${si.siAmazonwebservices?.hex}` },
+  'aws': { category: 'cloud', svg: createLucideIcon('Cloud'), defaultColor: '#FF9900' },
   'gcp': { category: 'cloud', svg: createSimpleIcon(si.siGooglecloud), defaultColor: `#${si.siGooglecloud?.hex}` },
-  'azure': { category: 'cloud', svg: createSimpleIcon(si.siMicrosoftazure), defaultColor: `#${si.siMicrosoftazure?.hex}` },
+  'azure': { category: 'cloud', svg: createLucideIcon('Cloud'), defaultColor: '#0089D6' },
   'vercel': { category: 'cloud', svg: createSimpleIcon(si.siVercel), defaultColor: `#${si.siVercel?.hex}` },
   'cloudflare': { category: 'cloud', svg: createSimpleIcon(si.siCloudflare), defaultColor: `#${si.siCloudflare?.hex}` },
 
   // OS
   'linux': { category: 'os', svg: createSimpleIcon(si.siLinux), defaultColor: `#${si.siLinux?.hex}` },
   'apple': { category: 'os', svg: createSimpleIcon(si.siApple), defaultColor: `#${si.siApple?.hex}` },
-  'windows': { category: 'os', svg: createSimpleIcon(si.siWindows), defaultColor: `#${si.siWindows?.hex}` },
+  'windows': { category: 'os', svg: createLucideIcon('Box'), defaultColor: '#0078D6' },
   'ubuntu': { category: 'os', svg: createSimpleIcon(si.siUbuntu), defaultColor: `#${si.siUbuntu?.hex}` },
 
   // Social
   'twitter': { category: 'social', svg: createSimpleIcon(si.siX), defaultColor: `#${si.siX?.hex}` },
-  'linkedin': { category: 'social', svg: createSimpleIcon(si.siLinkedin), defaultColor: `#${si.siLinkedin?.hex}` },
+  'linkedin': { category: 'social', svg: createLucideIcon('Zap'), defaultColor: '#0077B5' },
   'youtube': { category: 'social', svg: createSimpleIcon(si.siYoutube), defaultColor: `#${si.siYoutube?.hex}` },
   'discord': { category: 'social', svg: createSimpleIcon(si.siDiscord), defaultColor: `#${si.siDiscord?.hex}` },
 
@@ -124,4 +124,14 @@ export const LEGACY_ICON_MAP = {
   'code': ICON_LIBRARY['code']?.svg || '',
   'bolt': ICON_LIBRARY['zap']?.svg || '',
   'react': ICON_LIBRARY['react']?.svg || ''
+};
+
+export const ICON_MAP = LEGACY_ICON_MAP;
+
+export const UI_ICONS = {
+  'save': "M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z M17 21v-8H7v8 M7 3v5h8",
+  'delete': "M3 6h18 M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2",
+  'upload': "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M17 8l-5-5-5 5 M12 3v12",
+  'download': "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M7 10l5 5 5-5 M12 15V3",
+  'copy': "M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2 M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"
 };

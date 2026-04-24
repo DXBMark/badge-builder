@@ -14,6 +14,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import InterestsIcon from '@mui/icons-material/Interests';
 import BrandingWatermarkIcon from '@mui/icons-material/BrandingWatermark';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 
 const TABS = [
   { id: 'content', icon: <TextFieldsIcon />, label: 'Text' },
@@ -22,7 +23,8 @@ const TABS = [
   { id: 'icon', icon: <InterestsIcon />, label: 'Icons' },
   { id: 'presets', icon: <SaveIcon />, label: 'Presets' },
   { id: 'brand', icon: <BrandingWatermarkIcon />, label: 'Brand' },
-  { id: 'github', icon: <MenuBookIcon />, label: 'README' }
+  { id: 'github', icon: <MenuBookIcon />, label: 'README' },
+  { id: 'bulk', icon: <AutoFixHighIcon />, label: 'Bulk' }
 ];
 
 /**
