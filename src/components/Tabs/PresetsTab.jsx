@@ -2,75 +2,80 @@
  * Project: SVG Badge Builder
  * Author: [TS]
  * Purpose: MUI Presets Management Tab
- * Notes: Follow TS conventions.
+ * Notes: 3-column grid, BrandTab-matching style, search inline with Save button.
  */
 
 import React from 'react';
 import { 
-  Box, Typography, Button, Divider, IconButton, Paper, Stack, 
-  Grid, Tooltip, TextField, InputAdornment, ToggleButtonGroup, ToggleButton
+  Box, Typography, Button, Divider, IconButton, Paper,
+  Grid, TextField, InputAdornment
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
-import { BASE_PRESETS, PRESET_CATEGORIES } from '../../constants/presets';
+import { BASE_PRESETS } from '../../constants/presets';
 import { buildSVG } from '../../utils/svgBuilder';
 
 const PresetCard = ({ preset, onApply, onDelete, isCustom = false }) => {
-  // Responsive preview: replace fixed width with 100% and drop height
-  // The SVG viewBox ensures correct aspect ratio scaling.
+  // Scale SVG to fill container width, preserve viewBox aspect ratio
   const svgPreview = React.useMemo(() => {
     const raw = buildSVG(preset.config).svg;
     return raw
       .replace(/width="[0-9.]+"/, 'width="100%"')
-      .replace(/\s*height="[0-9.]+"/, '');
+      .replace(/height="[0-9.]+"/, 'height="100%"')
+      .replace(/<svg /, '<svg preserveAspectRatio="xMidYMid meet" ');
   }, [preset.config]);
 
   return (
     <Paper
       variant="outlined"
       sx={{
-        p: 1,
-        borderRadius: 2,
+        p: 1.5,
+        borderRadius: 2.5,
         transition: 'all 0.15s',
-        '&:hover': { borderColor: 'primary.main', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' },
+        '&:hover': { borderColor: 'primary.main', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' },
         display: 'flex',
         flexDirection: 'column',
         gap: 0.75,
       }}
     >
-      {/* Preview — native SVG scaling via viewBox */}
+      {/* SVG Preview — fixed 28px height container, SVG scales inside */}
       <Box sx={{
+        height: 28,
         bgcolor: 'background.neutral',
         borderRadius: 1.5,
         border: '1px solid',
         borderColor: 'divider',
-        px: 1.5,
-        py: 0.75,
-        lineHeight: 0,
         overflow: 'hidden',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        px: 0.5,
+        '& svg': { display: 'block', maxWidth: '100%', height: '100%' },
       }}>
-        <Box sx={{ width: '100%', lineHeight: 0 }} dangerouslySetInnerHTML={{ __html: svgPreview }} />
+        <Box sx={{ width: '100%', height: '100%', lineHeight: 0 }}
+          dangerouslySetInnerHTML={{ __html: svgPreview }}
+        />
       </Box>
 
-      {/* Name & category */}
-      <Box sx={{ px: 0.25 }}>
+      {/* Name & category — matching BrandCard typography */}
+      <Box>
         <Typography sx={{ fontWeight: 900, color: 'primary.main', textTransform: 'uppercase', fontSize: '0.5rem', letterSpacing: '0.07em', lineHeight: 1.4 }}>
           {preset.category}
         </Typography>
-        <Typography sx={{ fontWeight: 800, color: 'text.primary', fontSize: '0.68rem', lineHeight: 1.2 }}>
+        <Typography sx={{ fontWeight: 800, color: 'text.primary', fontSize: '0.65rem', lineHeight: 1.2 }}>
           {preset.name || preset.id}
         </Typography>
       </Box>
 
-      {/* Apply (+ Delete for custom) */}
+      {/* Apply button — identical style to BrandCard's Apply Brand */}
       <Box sx={{ display: 'flex', gap: 0.5 }}>
         <Button
           fullWidth
           size="small"
           variant="contained"
           onClick={() => onApply(preset.config)}
-          sx={{ py: 0.35, fontSize: '0.6rem', fontWeight: 800, borderRadius: 1.5, minHeight: 0, lineHeight: 1.4 }}
+          sx={{ py: 0.35, fontSize: '0.6rem', fontWeight: 700, borderRadius: 1.5, lineHeight: 1.4 }}
         >
           Apply
         </Button>
@@ -90,88 +95,66 @@ const PresetCard = ({ preset, onApply, onDelete, isCustom = false }) => {
 };
 
 const PresetsTab = ({ setConfig, customPresets, savePreset, deletePreset }) => {
-  const [filter, setFilter] = React.useState('all');
   const [search, setSearch] = React.useState('');
 
-  const filteredPresets = React.useMemo(() => {
-    return BASE_PRESETS.filter(p => {
-      const matchFilter = filter === 'all' || p.category === filter;
-      const matchSearch = p.name.toLowerCase().includes(search.toLowerCase()) || p.id.toLowerCase().includes(search.toLowerCase());
-      return matchFilter && matchSearch;
-    });
-  }, [filter, search]);
+  const filteredPresets = React.useMemo(() =>
+    BASE_PRESETS.filter(p =>
+      p.name.toLowerCase().includes(search.toLowerCase()) ||
+      p.id.toLowerCase().includes(search.toLowerCase()) ||
+      p.category.toLowerCase().includes(search.toLowerCase())
+    ),
+    [search]
+  );
 
-  const customList = React.useMemo(() => {
-    return Object.keys(customPresets).map(name => ({
-      id: name,
-      name,
-      category: 'custom',
-      config: customPresets[name]
-    }));
-  }, [customPresets]);
+  const customList = React.useMemo(() =>
+    Object.keys(customPresets).map(name => ({
+      id: name, name, category: 'custom', config: customPresets[name]
+    })),
+    [customPresets]
+  );
 
   return (
     <Box sx={{ p: 1 }}>
-      <Stack spacing={1.5} sx={{ mb: 2 }}>
+      {/* Top row: Save button + Search inline */}
+      <Box sx={{ display: 'flex', gap: 1, mb: 2, alignItems: 'center' }}>
         <Button
-          fullWidth
           variant="contained"
           size="small"
-          startIcon={<SaveIcon />}
+          startIcon={<SaveIcon sx={{ fontSize: 14 }} />}
           onClick={() => {
             const name = prompt("Enter preset name:");
             if (name) savePreset(name);
           }}
-          sx={{ py: 1, borderRadius: 2.5, fontWeight: 800, boxShadow: '0 4px 12px rgba(0,171,85,0.2)' }}
+          sx={{ py: 0.9, px: 1.5, borderRadius: 2.5, fontWeight: 800, flexShrink: 0, fontSize: '0.6rem', boxShadow: '0 4px 12px rgba(0,171,85,0.2)', whiteSpace: 'nowrap' }}
         >
-          Save Current as Preset
+          Save Preset
         </Button>
-
-        <TextField 
+        <TextField
           fullWidth
           size="small"
-          placeholder="Search presets..."
+          placeholder="Search…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon sx={{ color: 'text.disabled', fontSize: 18 }} />
+                <SearchIcon sx={{ color: 'text.disabled', fontSize: 16 }} />
               </InputAdornment>
             ),
-            sx: { borderRadius: 3, bgcolor: 'background.neutral' }
+            sx: { borderRadius: 2.5, bgcolor: 'background.neutral', fontSize: '0.75rem' },
           }}
         />
+      </Box>
 
-        <Box sx={{ overflowX: 'auto', pb: 0.5, '&::-webkit-scrollbar': { height: 3 } }}>
-          <ToggleButtonGroup
-            size="small"
-            value={filter}
-            exclusive
-            onChange={(_, val) => val && setFilter(val)}
-            sx={{ 
-              display: 'flex', 
-              gap: 0.75, 
-              '& .MuiToggleButtonGroup-grouped': { border: '1px solid !important', borderColor: 'divider !important', borderRadius: '10px !important' } 
-            }}
-          >
-            {PRESET_CATEGORIES.map(cat => (
-              <ToggleButton key={cat.id} value={cat.id} sx={{ whiteSpace: 'nowrap', px: 1.5, py: 0.4, fontSize: '0.6rem', fontWeight: 700 }}>
-                {cat.label}
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
-        </Box>
-      </Stack>
-
+      {/* Custom presets */}
       {customList.length > 0 && (
-        <Box sx={{ mb: 2.5 }}>
-          <Typography variant="overline" sx={{ fontWeight: 900, color: 'text.secondary', mb: 1, display: 'block', fontSize: '0.6rem' }}>
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="overline" sx={{ fontWeight: 900, color: 'text.secondary', display: 'block', mb: 1, fontSize: '0.6rem' }}>
             My Library ({customList.length})
           </Typography>
           <Grid container spacing={1.5}>
             {customList.map(p => (
-              <Grid item xs={6} key={p.id}>
+              <Grid item xs={4} key={p.id}>
                 <PresetCard preset={p} onApply={setConfig} onDelete={deletePreset} isCustom />
               </Grid>
             ))}
@@ -180,12 +163,13 @@ const PresetsTab = ({ setConfig, customPresets, savePreset, deletePreset }) => {
         </Box>
       )}
 
-      <Typography variant="overline" sx={{ fontWeight: 900, color: 'text.secondary', mb: 1, display: 'block', fontSize: '0.6rem' }}>
+      {/* Standard Library */}
+      <Typography variant="overline" sx={{ fontWeight: 900, color: 'text.secondary', display: 'block', mb: 1, fontSize: '0.6rem' }}>
         Standard Library ({filteredPresets.length})
       </Typography>
       <Grid container spacing={1.5}>
         {filteredPresets.map(p => (
-          <Grid item xs={6} key={p.id}>
+          <Grid item xs={4} key={p.id}>
             <PresetCard preset={p} onApply={setConfig} />
           </Grid>
         ))}
