@@ -10,17 +10,19 @@ import { Tabs, Tab, Box } from '@mui/material';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
 import AspectRatioIcon from '@mui/icons-material/AspectRatio';
 import PaletteIcon from '@mui/icons-material/Palette';
-import SettingsIcon from '@mui/icons-material/Settings';
 import SaveIcon from '@mui/icons-material/Save';
-import GitHubIcon from '@mui/icons-material/GitHub';
+import InterestsIcon from '@mui/icons-material/Interests';
+import BrandingWatermarkIcon from '@mui/icons-material/BrandingWatermark';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 const TABS = [
-  { id: 'content', icon: <TextFieldsIcon />, label: 'Typo' },
-  { id: 'layout', icon: <AspectRatioIcon />, label: 'Geo' },
+  { id: 'content', icon: <TextFieldsIcon />, label: 'Text' },
+  { id: 'layout', icon: <AspectRatioIcon />, label: 'Layout' },
   { id: 'style', icon: <PaletteIcon />, label: 'Style' },
-  { id: 'icon', icon: <SettingsIcon />, label: 'Asset' },
+  { id: 'icon', icon: <InterestsIcon />, label: 'Icons' },
   { id: 'presets', icon: <SaveIcon />, label: 'Presets' },
-  { id: 'github', icon: <GitHubIcon />, label: 'GitHub' }
+  { id: 'brand', icon: <BrandingWatermarkIcon />, label: 'Brand' },
+  { id: 'github', icon: <MenuBookIcon />, label: 'README' }
 ];
 
 /**

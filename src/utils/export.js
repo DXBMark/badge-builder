@@ -23,19 +23,14 @@ export const downloadSVG = (svgContent, fileName = 'badge.svg') => {
 };
 
 /**
- * [TS] Converts SVG to PNG and downloads it.
- * @param {string} svgContent
- * @param {number} width
- * @param {number} height
- * @param {string} fileName
+ * [TS] Converts SVG to PNG with custom scale and downloads it.
  */
-export const downloadPNG = (svgContent, width, height, fileName = 'badge.png') => {
+export const downloadPNG = (svgContent, width, height, fileName = 'badge.png', scale = 2) => {
   const canvas = document.createElement('canvas');
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width = width * dpr;
-  canvas.height = height * dpr;
+  canvas.width = width * scale;
+  canvas.height = height * scale;
   const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
+  ctx.scale(scale, scale);
 
   const img = new Image();
   const svgBlob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
@@ -54,4 +49,19 @@ export const downloadPNG = (svgContent, width, height, fileName = 'badge.png') =
   };
 
   img.src = url;
+};
+
+/**
+ * [TS] Downloads JSON data as a file.
+ */
+export const downloadJSON = (data, fileName = 'config.json') => {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 };

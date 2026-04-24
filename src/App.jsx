@@ -34,7 +34,7 @@ import { ColorModeContext } from './main';
 // Constants & Tools
 import { BASE_PRESETS } from './constants/presets';
 import { buildSVG } from './utils/svgBuilder';
-import { downloadSVG, downloadPNG } from './utils/export';
+import { downloadSVG, downloadPNG, downloadJSON } from './utils/export';
 import { useDrag } from './hooks/useDrag';
 
 // Components
@@ -49,6 +49,7 @@ import PresetsTab from './components/Tabs/PresetsTab';
 import GitHubTab from './components/Tabs/GitHubTab';
 import ExportModal from './components/ExportModal';
 import DiagnosticsPanel from './components/DiagnosticsPanel';
+import BrandTab from './components/Tabs/BrandTab';
 
 /**
  * [TS] Main Application Component
@@ -178,9 +179,25 @@ const App = ({ mode }) => {
     setShowExport(false);
   };
 
-  const handleExportPNG = () => {
-    downloadPNG(badgeData.svg, badgeData.width, badgeData.height, 'badge.png');
-    setToast({ open: true, message: 'PNG Downloaded', severity: 'success' });
+  const handleExportPNG = (scale = 2) => {
+    downloadPNG(badgeData.svg, badgeData.width, badgeData.height, 'badge.png', scale);
+    setToast({ open: true, message: `PNG (${scale}x) Downloaded`, severity: 'success' });
+    setShowExport(false);
+  };
+
+  const handleCopySnippet = (type) => {
+    let text = '';
+    if (type === 'MARKDOWN') text = `![${config.leftText}](https://img.shields.io/badge/${encodeURIComponent(config.leftText)}-${encodeURIComponent(config.rightText)}-${config.rightBg.replace('#', '')})`;
+    else if (type === 'HTML') text = `<img src="data:image/svg+xml;base64,${btoa(badgeData.svg)}" alt="${config.leftText}" />`;
+    else if (type === 'JSON') text = JSON.stringify(config, null, 2);
+    
+    handleCopy(text, type);
+    setShowExport(false);
+  };
+
+  const handleExportConfig = () => {
+    downloadJSON(config, 'badge-config.json');
+    setToast({ open: true, message: 'Config JSON Downloaded', severity: 'success' });
     setShowExport(false);
   };
 
@@ -247,6 +264,7 @@ const App = ({ mode }) => {
               />
               <SvgSource 
                 svg={badgeData.svg} 
+                config={config}
                 onCopy={handleCopy} 
               />
               <DiagnosticsPanel results={diagnostics} />
@@ -271,6 +289,7 @@ const App = ({ mode }) => {
                     deletePreset={deletePreset}
                    />
                 )}
+                {activeTab === 'brand' && <BrandTab />}
                 {activeTab === 'github' && (
                   <GitHubTab 
                     context={gitHubContext} 
@@ -317,6 +336,10 @@ const App = ({ mode }) => {
         onExportSVG={handleExportSVG}
         onExportPNG={handleExportPNG}
         onCopyCode={() => handleCopy(badgeData.svg, 'SVG Code')}
+        onCopyMarkdown={() => handleCopySnippet('MARKDOWN')}
+        onCopyHTML={() => handleCopySnippet('HTML')}
+        onCopyJSON={() => handleCopySnippet('JSON')}
+        onExportConfig={handleExportConfig}
       />
 
       <Snackbar 
