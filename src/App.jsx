@@ -275,7 +275,7 @@ const App = ({ mode }) => {
         <Box sx={{ mt: 10, pt: 8, borderTop: '1px solid', borderColor: 'divider', textAlign: 'center' }}>
           <Stack spacing={2} sx={{ alignItems: 'center' }}>
             <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600 }}>
-              © 2026 SVG Badge Builder. All rights reserved.
+              © 2026 Badge Builder Pro by DXBMark Ltd. All rights reserved.
             </Typography>
             <Box sx={{ display: 'flex', gap: 3, justifyContent: 'center', alignItems: 'center' }}>
               <Link 
