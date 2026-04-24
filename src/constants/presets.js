@@ -77,11 +77,12 @@ export const BASE_PRESETS = [
     category: 'style',
     config: {
       leftText: "shields", rightText: "plastic",
-      width: 120, height: 18, leftWidth: 60, borderRadius: 4,
+      width: 120, height: 20, leftWidth: 60, borderRadius: 4,
       leftBg: "#555555", rightBg: "#007ec6", useGradient: true,
-      gradStart: "rgba(255,255,255,0.3)", gradEnd: "rgba(0,0,0,0.3)",
+      gradStart: "#38b6f5", gradEnd: "#0066b2",
       leftTextColor: "#FFFFFF", rightTextColor: "#FFFFFF",
-      leftFontSize: 11, rightFontSize: 11, leftFontWeight: "400", rightFontWeight: "600"
+      leftFontSize: 11, rightFontSize: 11, leftFontWeight: "400", rightFontWeight: "600",
+      fontFamily: "sans-serif", iconType: "none", autoWidth: false
     }
   },
   {
@@ -90,11 +91,11 @@ export const BASE_PRESETS = [
     category: 'style',
     config: {
       leftText: "root@", rightText: "badge-builder",
-      width: 180, height: 24, leftWidth: 60, borderRadius: 0,
+      width: 180, height: 20, leftWidth: 60, borderRadius: 0,
       leftBg: "#000", rightBg: "#111", useGradient: false,
       leftTextColor: "#0f0", rightTextColor: "#0f0",
-      leftFontSize: 12, rightFontSize: 12, fontFamily: "monospace",
-      iconType: "terminal", iconMode: "preset", iconScale: 0.8, iconX: 4, iconY: 6
+      leftFontSize: 11, rightFontSize: 11, fontFamily: "monospace",
+      iconType: "terminal", iconMode: "preset", iconScale: 0.8, autoWidth: false
     }
   },
 
@@ -105,7 +106,7 @@ export const BASE_PRESETS = [
     category: 'minimal',
     config: {
       leftText: "v1.0.0", rightText: "light",
-      width: 130, height: 28, leftWidth: 60, borderRadius: 20,
+      width: 130, height: 24, leftWidth: 60, borderRadius: 20,
       leftBg: "#ffffff", rightBg: "#f1f5f9", useGradient: false,
       leftTextColor: "#0f172a", rightTextColor: "#64748b",
       leftFontSize: 11, rightFontSize: 11, leftFontWeight: "700", rightFontWeight: "600",
@@ -118,7 +119,7 @@ export const BASE_PRESETS = [
     category: 'minimal',
     config: {
       leftText: "PRO", rightText: "MODE",
-      width: 110, height: 28, leftWidth: 45, borderRadius: 4,
+      width: 110, height: 24, leftWidth: 45, borderRadius: 4,
       leftBg: "#0f172a", rightBg: "#1e293b", useGradient: false,
       leftTextColor: "#38bdf8", rightTextColor: "#94a3b8",
       leftFontSize: 11, rightFontSize: 11, leftFontWeight: "800", rightFontWeight: "600"
@@ -130,7 +131,7 @@ export const BASE_PRESETS = [
     category: 'minimal',
     config: {
       leftText: "docs", rightText: "ready",
-      width: 100, height: 24, leftWidth: 50, borderRadius: 12,
+      width: 100, height: 20, leftWidth: 50, borderRadius: 12,
       leftBg: "#f8fafc", rightBg: "#f8fafc", useGradient: false,
       leftTextColor: "#475569", rightTextColor: "#0f172a",
       leftFontSize: 11, rightFontSize: 11, leftFontWeight: "600", rightFontWeight: "700",
@@ -356,7 +357,7 @@ export const BASE_PRESETS = [
     category: 'gradient',
     config: {
       leftText: "NEON", rightText: "SYSTEM",
-      width: 160, height: 32, leftWidth: 60, borderRadius: 4,
+      width: 160, height: 28, leftWidth: 60, borderRadius: 4,
       leftBg: "#000", rightBg: "#0ff", useGradient: true,
       gradStart: "#f0f", gradEnd: "#0ff",
       leftTextColor: "#fff", rightTextColor: "#000",
@@ -369,7 +370,7 @@ export const BASE_PRESETS = [
     category: 'gradient',
     config: {
       leftText: "v2.0", rightText: "Ocean",
-      width: 140, height: 32, leftWidth: 50, borderRadius: 8,
+      width: 140, height: 28, leftWidth: 50, borderRadius: 8,
       leftBg: "#1e293b", rightBg: "#3b82f6", useGradient: true,
       gradStart: "#3b82f6", gradEnd: "#2dd4bf",
       leftTextColor: "#94a3b8", rightTextColor: "#fff",
@@ -382,7 +383,7 @@ export const BASE_PRESETS = [
     category: 'gradient',
     config: {
       leftText: "PREMIUM", rightText: "BADGE",
-      width: 160, height: 36, leftWidth: 70, borderRadius: 4,
+      width: 160, height: 28, leftWidth: 70, borderRadius: 4,
       leftBg: "#2e1065", rightBg: "#7c3aed", useGradient: true,
       gradStart: "#7c3aed", gradEnd: "#db2777",
       leftTextColor: "#ddd6fe", rightTextColor: "#fff",

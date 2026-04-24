@@ -32,11 +32,11 @@ const BrandCard = ({ brand, onApply, onDelete, isCustom }) => {
   };
 
   return (
-    <Paper variant="outlined" sx={{ p: 2, borderRadius: 3, '&:hover': { borderColor: 'primary.main', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' } }}>
-      <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ mb: 2 }}>
+    <Paper variant="outlined" sx={{ p: 1.5, borderRadius: 2.5, '&:hover': { borderColor: 'primary.main', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' } }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ mb: 1 }}>
         <Box>
-          <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>{brand.name}</Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.6rem' }}>{brand.typography.fontFamily}</Typography>
+          <Typography variant="caption" sx={{ fontWeight: 800, fontSize: '0.7rem' }}>{brand.name}</Typography>
+          <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary', fontSize: '0.55rem' }}>{brand.typography.fontFamily}</Typography>
         </Box>
         {isCustom && (
           <IconButton size="small" color="error" onClick={() => onDelete(brand.id)} sx={{ p: 0.5 }}>
@@ -46,13 +46,13 @@ const BrandCard = ({ brand, onApply, onDelete, isCustom }) => {
       </Stack>
 
       {/* Color Palette Display */}
-      <Stack direction="row" spacing={0.5} sx={{ mb: 2 }}>
+      <Stack direction="row" spacing={0.5} sx={{ mb: 1 }}>
         {[brand.colors.primary, brand.colors.secondary, brand.colors.textLight, brand.colors.gradientEnd].map((color, i) => (
-          <Box key={i} sx={{ width: 24, height: 24, borderRadius: '50%', bgcolor: color, border: '1px solid', borderColor: 'divider' }} />
+          <Box key={i} sx={{ width: 18, height: 18, borderRadius: '50%', bgcolor: color, border: '1px solid', borderColor: 'divider' }} />
         ))}
       </Stack>
 
-      <Button fullWidth variant="contained" size="small" startIcon={<ColorLensIcon />} onClick={applyBrand} sx={{ py: 0.5, borderRadius: 1.5, fontWeight: 700 }}>
+      <Button fullWidth variant="contained" size="small" startIcon={<ColorLensIcon />} onClick={applyBrand} sx={{ py: 0.35, borderRadius: 1.5, fontWeight: 700, fontSize: '0.6rem', lineHeight: 1.4 }}>
         Apply Brand
       </Button>
     </Paper>
@@ -98,19 +98,19 @@ const BrandTab = ({ config, update, customBrands = {}, saveBrand, deleteBrand })
         size="large"
         startIcon={<SaveIcon />}
         onClick={handleSaveBrand}
-        sx={{ mb: 4, py: 1.5, borderRadius: 3, boxShadow: '0 8px 16px rgba(0,171,85,0.24)' }}
+        sx={{ mb: 2.5, py: 1, borderRadius: 2.5, fontWeight: 800, boxShadow: '0 4px 12px rgba(0,171,85,0.2)' }}
       >
         Save Current as Brand Kit
       </Button>
 
       {customList.length > 0 && (
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="overline" sx={{ fontWeight: 900, color: 'text.secondary', display: 'block', mb: 1.5 }}>
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="overline" sx={{ fontWeight: 900, color: 'text.secondary', display: 'block', mb: 1, fontSize: '0.6rem' }}>
             My Brand Kits
           </Typography>
-          <Grid container spacing={2}>
+          <Grid container spacing={1.5}>
             {customList.map(brand => (
-              <Grid item xs={12} sm={6} key={brand.id}>
+          <Grid item xs={6} key={brand.id}>
                 <BrandCard brand={brand} onApply={handleApply} onDelete={deleteBrand} isCustom />
               </Grid>
             ))}
@@ -118,12 +118,12 @@ const BrandTab = ({ config, update, customBrands = {}, saveBrand, deleteBrand })
         </Box>
       )}
 
-      <Typography variant="overline" sx={{ fontWeight: 900, color: 'text.secondary', display: 'block', mb: 1.5 }}>
+      <Typography variant="overline" sx={{ fontWeight: 900, color: 'text.secondary', display: 'block', mb: 1, fontSize: '0.6rem' }}>
         Built-in Brand Kits
       </Typography>
-      <Grid container spacing={2}>
+      <Grid container spacing={1.5}>
         {BUILT_IN_BRANDS.map(brand => (
-          <Grid item xs={12} sm={6} key={brand.id}>
+          <Grid item xs={6} key={brand.id}>
             <BrandCard brand={brand} onApply={handleApply} />
           </Grid>
         ))}
