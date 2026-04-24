@@ -15,6 +15,21 @@ const createSimpleIcon = (icon) => {
   return `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="${icon.path}"/></svg>`;
 };
 
+// --- HELPER FOR INLINE BRAND ICONS ---
+// Used as stable fallback for brands removed from simple-icons by company request.
+const createBrandIcon = (path) => {
+  if (!path) return '';
+  return `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="${path}"/></svg>`;
+};
+
+// Stable inline paths for brands no longer in simple-icons v14+
+const BRAND_PATHS = {
+  // LinkedIn requested removal from simple-icons in v14
+  linkedin: 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z',
+  // Windows four-pane flag logo
+  windows: 'M0 0v11h11V0zm13 0v11h11V0zm0 13v11h11V13zM0 13v11h11V13z',
+};
+
 // --- HELPER TO EXTRACT SVG FROM LUCIDE ---
 // Lucide icons have a string representation if we convert them, or we can just use the SVG node.
 // Actually, lucide exports icons as objects. Let's create a builder.
@@ -70,7 +85,8 @@ export const ICON_LIBRARY = {
   'github': { category: 'devtools', svg: createSimpleIcon(si.siGithub), defaultColor: `#${si.siGithub?.hex}` },
   'gitlab': { category: 'devtools', svg: createSimpleIcon(si.siGitlab), defaultColor: `#${si.siGitlab?.hex}` },
   'docker': { category: 'devtools', svg: createSimpleIcon(si.siDocker), defaultColor: `#${si.siDocker?.hex}` },
-  'vscode': { category: 'devtools', svg: createSimpleIcon(si.siVisualstudiocode), defaultColor: `#${si.siVisualstudiocode?.hex}` },
+  // siVisualstudiocode removed in simple-icons v14 — using VSCodium (same shield logo, FOSS twin)
+  'vscode': { category: 'devtools', svg: createSimpleIcon(si.siVscodium), defaultColor: `#${si.siVscodium?.hex}` },
   'vim': { category: 'devtools', svg: createSimpleIcon(si.siVim), defaultColor: `#${si.siVim?.hex}` },
 
   // Databases
@@ -81,21 +97,25 @@ export const ICON_LIBRARY = {
   'sqlite': { category: 'databases', svg: createSimpleIcon(si.siSqlite), defaultColor: `#${si.siSqlite?.hex}` },
 
   // Cloud
-  'aws': { category: 'cloud', svg: createSimpleIcon(si.siAmazonwebservices), defaultColor: `#${si.siAmazonwebservices?.hex}` },
+  // siAmazonwebservices removed in simple-icons v14 — Lucide Cloud with official AWS orange
+  'aws': { category: 'cloud', svg: createLucideIcon('Cloud'), defaultColor: '#FF9900' },
   'gcp': { category: 'cloud', svg: createSimpleIcon(si.siGooglecloud), defaultColor: `#${si.siGooglecloud?.hex}` },
-  'azure': { category: 'cloud', svg: createSimpleIcon(si.siMicrosoftazure), defaultColor: `#${si.siMicrosoftazure?.hex}` },
+  // siMicrosoftazure removed in simple-icons v14 — Lucide CloudCog with official Azure blue
+  'azure': { category: 'cloud', svg: createLucideIcon('CloudCog'), defaultColor: '#0078D4' },
   'vercel': { category: 'cloud', svg: createSimpleIcon(si.siVercel), defaultColor: `#${si.siVercel?.hex}` },
   'cloudflare': { category: 'cloud', svg: createSimpleIcon(si.siCloudflare), defaultColor: `#${si.siCloudflare?.hex}` },
 
   // OS
   'linux': { category: 'os', svg: createSimpleIcon(si.siLinux), defaultColor: `#${si.siLinux?.hex}` },
   'apple': { category: 'os', svg: createSimpleIcon(si.siApple), defaultColor: `#${si.siApple?.hex}` },
-  'windows': { category: 'os', svg: createSimpleIcon(si.siWindows), defaultColor: `#${si.siWindows?.hex}` },
+  // siWindows removed in simple-icons v14 — inline four-pane Windows flag path
+  'windows': { category: 'os', svg: createBrandIcon(BRAND_PATHS.windows), defaultColor: '#0078D4' },
   'ubuntu': { category: 'os', svg: createSimpleIcon(si.siUbuntu), defaultColor: `#${si.siUbuntu?.hex}` },
 
   // Social
   'twitter': { category: 'social', svg: createSimpleIcon(si.siX), defaultColor: `#${si.siX?.hex}` },
-  'linkedin': { category: 'social', svg: createSimpleIcon(si.siLinkedin), defaultColor: `#${si.siLinkedin?.hex}` },
+  // siLinkedin removed in simple-icons v14 — stable inline brand path
+  'linkedin': { category: 'social', svg: createBrandIcon(BRAND_PATHS.linkedin), defaultColor: '#0A66C2' },
   'youtube': { category: 'social', svg: createSimpleIcon(si.siYoutube), defaultColor: `#${si.siYoutube?.hex}` },
   'discord': { category: 'social', svg: createSimpleIcon(si.siDiscord), defaultColor: `#${si.siDiscord?.hex}` },
 

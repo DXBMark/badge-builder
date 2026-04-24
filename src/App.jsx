@@ -50,6 +50,7 @@ import GitHubTab from './components/Tabs/GitHubTab';
 import BulkTab from './components/Tabs/BulkTab';
 import ExportModal from './components/ExportModal';
 import DiagnosticsPanel from './components/DiagnosticsPanel';
+import { runDiagnostics } from './core/diagnostics';
 import BrandTab from './components/Tabs/BrandTab';
 
 /**
@@ -128,18 +129,10 @@ const App = ({ mode }) => {
    */
   const badgeData = useMemo(() => buildSVG(config), [config]);
 
-  const diagnostics = useMemo(() => [
-    // ✅ Core: SVG engine produces valid output
-    { name: 'Vector Engine', pass: !!badgeData.svg && badgeData.svg.length > 10 },
-    // ✅ Shields.io: badge height must be at least 20px
-    { name: 'Min Height (20px)', pass: Number(config.height) >= 20 },
-    // ✅ Shields.io: badge must have label text
-    { name: 'Label Present', pass: !!(config.leftText && config.leftText.trim().length > 0) },
-    // ✅ Shields.io: value text should exist  
-    { name: 'Value Present', pass: !!(config.rightText && config.rightText.trim().length > 0) },
-    // ✅ Export: badge meets minimum width for readability
-    { name: 'Export Ready', pass: Number(config.width) >= 40 && Number(config.height) >= 16 },
-  ], [badgeData, config]);
+  const diagnostics = useMemo(
+    () => runDiagnostics(config, badgeData.svg),
+    [config, badgeData.svg]
+  );
 
   /*
    * [TS] Event Handlers
@@ -293,12 +286,12 @@ const App = ({ mode }) => {
                 config={config}
                 onCopy={handleCopy} 
               />
-              <DiagnosticsPanel results={diagnostics} />
             </Stack>
           </Box>
 
           {/* Configuration sidebar */}
           <Box>
+            <Stack spacing={3}>
             <Paper sx={{ borderRadius: 4, overflow: 'hidden', position: 'sticky', top: 32 }}>
               <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
               
@@ -331,6 +324,8 @@ const App = ({ mode }) => {
                 )}
               </Box>
             </Paper>
+            <DiagnosticsPanel results={diagnostics} />
+            </Stack>
           </Box>
         </Box>
 

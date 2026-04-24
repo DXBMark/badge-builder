@@ -2,36 +2,65 @@
  * Project: SVG Badge Builder
  * Author: [TS]
  * Purpose: MUI Status Badge Component
- * Notes: Fixed palette — lighter tokens not in default MUI theme.
+ * Notes: Supports three states — PASS, WARNING, FAIL.
  */
 
 import React from 'react';
 import { Chip } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import ErrorIcon from '@mui/icons-material/Error';
 
+const STATUS_STYLES = {
+  PASS: {
+    bgcolor: 'rgba(0, 171, 85, 0.08)',
+    color: '#007B55',
+    borderColor: 'rgba(0, 171, 85, 0.24)',
+    icon: <CheckCircleIcon sx={{ fontSize: '14px !important', color: '#00AB55 !important' }} />,
+    label: 'PASS',
+  },
+  WARNING: {
+    bgcolor: 'rgba(255, 171, 0, 0.08)',
+    color: '#B76E00',
+    borderColor: 'rgba(255, 171, 0, 0.32)',
+    icon: <WarningAmberIcon sx={{ fontSize: '14px !important', color: '#FFAB00 !important' }} />,
+    label: 'WARN',
+  },
+  FAIL: {
+    bgcolor: 'rgba(255, 72, 66, 0.08)',
+    color: '#B71D18',
+    borderColor: 'rgba(255, 72, 66, 0.24)',
+    icon: <ErrorIcon sx={{ fontSize: '14px !important', color: '#FF4842 !important' }} />,
+    label: 'FAIL',
+  },
+};
+
 /**
- * [TS] MUI-based status chip with valid palette tokens.
- * @param {Object} props
- * @returns {JSX.Element}
+ * [TS] MUI-based status chip with PASS / WARNING / FAIL states.
+ * Accepts either `status` ('PASS'|'WARNING'|'FAIL') or legacy `pass` boolean.
  */
-const StatusBadge = ({ label, pass }) => (
-  <Chip
-    label={`${label}: ${pass ? 'PASS' : 'FAIL'}`}
-    size="small"
-    icon={pass ? <CheckCircleIcon sx={{ fontSize: '14px !important', color: pass ? '#00AB55 !important' : '#FF4842 !important' }} /> : <ErrorIcon sx={{ fontSize: '14px !important', color: '#FF4842 !important' }} />}
-    sx={{
-      fontWeight: 700,
-      fontSize: '0.625rem',
-      letterSpacing: '0.04em',
-      bgcolor: pass ? 'rgba(0, 171, 85, 0.08)' : 'rgba(255, 72, 66, 0.08)',
-      color: pass ? '#007B55' : '#B71D18',
-      border: '1px solid',
-      borderColor: pass ? 'rgba(0, 171, 85, 0.24)' : 'rgba(255, 72, 66, 0.24)',
-      borderRadius: 1,
-      '& .MuiChip-icon': { color: 'inherit' }
-    }}
-  />
-);
+const StatusBadge = ({ label, status, pass }) => {
+  const resolvedStatus = status ?? (pass ? 'PASS' : 'FAIL');
+  const style = STATUS_STYLES[resolvedStatus] ?? STATUS_STYLES.FAIL;
+
+  return (
+    <Chip
+      label={`${label}: ${style.label}`}
+      size="small"
+      icon={style.icon}
+      sx={{
+        fontWeight: 700,
+        fontSize: '0.625rem',
+        letterSpacing: '0.04em',
+        bgcolor: style.bgcolor,
+        color: style.color,
+        border: '1px solid',
+        borderColor: style.borderColor,
+        borderRadius: 1,
+        '& .MuiChip-icon': { color: 'inherit' },
+      }}
+    />
+  );
+};
 
 export default StatusBadge;

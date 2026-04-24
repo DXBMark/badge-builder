@@ -2,15 +2,8 @@
  * Project: SVG Badge Builder
  * Author: [TS]
  * Purpose: Build Diagnostics Panel
- * Notes: Shows real-time build health for the badge configuration.
- *
- * PURPOSE EXPLANATION:
- * This panel acts as a real-time "build health" monitor, equivalent to CI/CD
- * status badges on GitHub READMEs. It validates:
- *  - That the SVG engine produces valid output
- *  - That Shields.io-compatible dimensions are met (min 20px height)
- *  - That text contrast is sufficient for readability
- *  - That exported files are production-ready
+ * Notes: Shows real-time build health. Checks conform to Shields.io,
+ *        GitHub Markdown rendering, and WCAG AA contrast standards.
  */
 
 import React from 'react';
@@ -19,19 +12,10 @@ import TroubleshootIcon from '@mui/icons-material/Troubleshoot';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutlined';
 import StatusBadge from './ui/StatusBadge';
 
-const DIAGNOSTIC_DESCRIPTIONS = {
-  'Vector Engine': 'The SVG generator is producing valid, non-empty XML output.',
-  'Min Height (20px)': 'Shields.io standard: badge height must be ≥ 20px to be legible.',
-  'Label Present': 'Shields.io requires a label (left text) for a valid badge.',
-  'Value Present': 'Shields.io requires a value (right text) to complete the badge.',
-  'Export Ready': 'Width ≥ 40px and Height ≥ 16px — safe to export as SVG or PNG.',
-};
-
 /**
  * [TS] Real-time build health panel.
- * Mirrors CI/CD status indicators used in GitHub Shields-style badges.
- * @param {Object} props
- * @returns {JSX.Element}
+ * Each check carries its own message and suggestion — no static lookup needed.
+ * @param {{ results: import('../core/diagnostics').DiagnosticCheck[] }} props
  */
 const DiagnosticsPanel = ({ results }) => (
   <Paper sx={{ p: 3, borderRadius: 4, border: '1px solid', borderColor: 'divider' }}>
@@ -44,7 +28,7 @@ const DiagnosticsPanel = ({ results }) => (
         </Typography>
       </Box>
       <Tooltip
-        title="Real-time health checks for your badge configuration. Think of these as CI/CD status indicators — all PASS means your badge is production-ready and compatible with Shields.io standards."
+        title="Real-time health checks — Shields.io dimensions, GitHub Markdown compatibility, and WCAG AA contrast. All PASS means your badge is production-ready."
         placement="top"
         arrow
       >
@@ -54,15 +38,19 @@ const DiagnosticsPanel = ({ results }) => (
 
     {/* Status chips */}
     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-      {results.map((t, i) => (
+      {results.map((check) => (
         <Tooltip
-          key={i}
-          title={DIAGNOSTIC_DESCRIPTIONS[t.name] || t.name}
+          key={check.id}
+          title={
+            check.suggestion
+              ? `${check.message} — ${check.suggestion}`
+              : check.message
+          }
           placement="top"
           arrow
         >
           <span>
-            <StatusBadge label={t.name} pass={t.pass} />
+            <StatusBadge label={check.name} status={check.status} />
           </span>
         </Tooltip>
       ))}
@@ -70,7 +58,7 @@ const DiagnosticsPanel = ({ results }) => (
 
     {/* Footer hint */}
     <Typography variant="caption" sx={{ display: 'block', mt: 2, color: 'text.disabled', fontSize: '0.65rem', fontStyle: 'italic' }}>
-      Hover each indicator for details. All checks must pass for a production-ready badge.
+      Hover each indicator for details. Shields.io · GitHub · WCAG AA.
     </Typography>
   </Paper>
 );
