@@ -11,6 +11,7 @@
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev/)
 [![MIT License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](./LICENSE)
 [![Version](https://img.shields.io/badge/Version-v1.0.0-blue?style=for-the-badge)](https://github.com/tariqsaidofficial/badge-builder/releases/tag/v1.0.0)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen?style=for-the-badge&logo=github)](https://tariqsaidofficial.github.io/badge-builder/)
 
 </div>
 
@@ -18,9 +19,9 @@
 
 ## 🔗 Live Demo
 
-> **Live demo coming soon.**
->
-> Planned: [https://tariqsaidofficial.github.io/badge-builder/](https://tariqsaidofficial.github.io/badge-builder/)
+**[🚀 Open Live Demo →](https://tariqsaidofficial.github.io/badge-builder/)**
+
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen?style=for-the-badge&logo=github)](https://tariqsaidofficial.github.io/badge-builder/)
 
 ---
 
