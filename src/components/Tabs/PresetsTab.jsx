@@ -16,14 +16,23 @@ import SearchIcon from '@mui/icons-material/Search';
 import { BASE_PRESETS } from '../../constants/presets';
 import { buildSVG } from '../../utils/svgBuilder';
 
+const cloneConfig = (config) => {
+  if (typeof structuredClone === 'function') {
+    return structuredClone(config);
+  }
+
+  return JSON.parse(JSON.stringify(config));
+};
+
 const PresetCard = ({ preset, onApply, onDelete, isCustom = false }) => {
   // Scale SVG to fill container width, preserve viewBox aspect ratio
   const svgPreview = React.useMemo(() => {
     const raw = buildSVG(preset.config).svg;
-    return raw
-      .replace(/width="[0-9.]+"/, 'width="100%"')
-      .replace(/height="[0-9.]+"/, 'height="100%"')
-      .replace(/<svg /, '<svg preserveAspectRatio="xMidYMid meet" ');
+
+    return raw.replace(
+      /<svg /,
+      '<svg preserveAspectRatio="xMidYMid meet" '
+    );
   }, [preset.config]);
 
   return (
@@ -37,11 +46,12 @@ const PresetCard = ({ preset, onApply, onDelete, isCustom = false }) => {
         display: 'flex',
         flexDirection: 'column',
         gap: 0.75,
+        minHeight: 128,
       }}
     >
       {/* SVG Preview — fixed 28px height container, SVG scales inside */}
       <Box sx={{
-        height: 28,
+        height: 44,
         bgcolor: 'background.neutral',
         borderRadius: 1.5,
         border: '1px solid',
@@ -50,10 +60,24 @@ const PresetCard = ({ preset, onApply, onDelete, isCustom = false }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        px: 0.5,
-        '& svg': { display: 'block', maxWidth: '100%', height: '100%' },
+        px: 0.75,
+        '& svg': {
+          display: 'block',
+          maxWidth: '100%',
+          maxHeight: 34,
+          width: 'auto',
+          height: 'auto',
+          flexShrink: 0,
+        },
       }}>
-        <Box sx={{ width: '100%', height: '100%', lineHeight: 0 }}
+        <Box
+          sx={{
+            lineHeight: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            maxWidth: '100%',
+          }}
           dangerouslySetInnerHTML={{ __html: svgPreview }}
         />
       </Box>
@@ -74,7 +98,7 @@ const PresetCard = ({ preset, onApply, onDelete, isCustom = false }) => {
           fullWidth
           size="small"
           variant="contained"
-          onClick={() => onApply(preset.config)}
+          onClick={() => onApply(cloneConfig(preset.config))}
           sx={{ py: 0.35, fontSize: '0.6rem', fontWeight: 700, borderRadius: 1.5, lineHeight: 1.4 }}
         >
           Apply
@@ -154,7 +178,7 @@ const PresetsTab = ({ setConfig, customPresets, savePreset, deletePreset }) => {
           </Typography>
           <Grid container spacing={1.5}>
             {customList.map(p => (
-              <Grid item xs={4} key={p.id}>
+              <Grid item xs={12} sm={6} md={4} key={p.id}>
                 <PresetCard preset={p} onApply={setConfig} onDelete={deletePreset} isCustom />
               </Grid>
             ))}
@@ -169,7 +193,7 @@ const PresetsTab = ({ setConfig, customPresets, savePreset, deletePreset }) => {
       </Typography>
       <Grid container spacing={1.5}>
         {filteredPresets.map(p => (
-          <Grid item xs={4} key={p.id}>
+          <Grid item xs={12} sm={6} md={4} key={p.id}>
             <PresetCard preset={p} onApply={setConfig} />
           </Grid>
         ))}

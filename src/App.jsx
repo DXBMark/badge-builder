@@ -53,6 +53,35 @@ import DiagnosticsPanel from './components/DiagnosticsPanel';
 import { runDiagnostics } from './core/diagnostics';
 import BrandTab from './components/Tabs/BrandTab';
 
+const cloneConfig = (value) => {
+  if (typeof structuredClone === 'function') {
+    return structuredClone(value);
+  }
+
+  return JSON.parse(JSON.stringify(value));
+};
+
+const getBadgeLabel = (config) => config.leftText || 'Badge';
+const getBadgeValue = (config) => config.rightText || 'Value';
+const getBadgeColor = (config) => (config.rightBg || '#4c1').replace('#', '');
+
+const createMarkdownSnippet = (config) => {
+  const label = getBadgeLabel(config);
+  const value = getBadgeValue(config);
+  const color = getBadgeColor(config);
+
+  return `![${label}](https://img.shields.io/badge/${encodeURIComponent(label)}-${encodeURIComponent(value)}-${color})`;
+};
+
+const createHtmlSnippet = (svg, config) => {
+  const label = getBadgeLabel(config);
+  const bytes = new TextEncoder().encode(svg);
+  const binString = Array.from(bytes, (byte) => String.fromCharCode(byte)).join('');
+  const safeB64 = btoa(binString);
+
+  return `<img src="data:image/svg+xml;base64,${safeB64}" alt="${label}" />`;
+};
+
 /**
  * [TS] Main Application Component
  */
@@ -93,12 +122,27 @@ const App = ({ mode }) => {
   }, []);
 
   const savePreset = useCallback((name) => {
-    const newPresets = { ...customPresets, [name]: config };
+    const newPresets = {
+      ...customPresets,
+      [name]: cloneConfig(config),
+    };
+
     setCustomPresets(newPresets);
-    try { 
+
+    try {
       localStorage.setItem('ts_badge_presets_mui', JSON.stringify(newPresets));
-      setToast({ open: true, message: `Preset "${name}" Saved!`, severity: 'success' });
-    } catch(e) {}
+      setToast({
+        open: true,
+        message: `Preset "${name}" Saved!`,
+        severity: 'success',
+      });
+    } catch (e) {
+      setToast({
+        open: true,
+        message: 'Failed to save preset',
+        severity: 'error',
+      });
+    }
   }, [config, customPresets]);
 
   const deletePreset = useCallback((name) => {
@@ -201,14 +245,14 @@ const App = ({ mode }) => {
 
   const handleCopySnippet = (type) => {
     let text = '';
-    if (type === 'MARKDOWN') text = `![${config.leftText}](https://img.shields.io/badge/${encodeURIComponent(config.leftText)}-${encodeURIComponent(config.rightText)}-${config.rightBg.replace('#', '')})`;
-    else if (type === 'HTML') {
-      const bytes = new TextEncoder().encode(badgeData.svg);
-      const binString = Array.from(bytes, (byte) => String.fromCharCode(byte)).join("");
-      text = `<img src="data:image/svg+xml;base64,${btoa(binString)}" alt="${config.leftText}" />`;
+    if (type === 'MARKDOWN') {
+      text = createMarkdownSnippet(config);
+    } else if (type === 'HTML') {
+      text = createHtmlSnippet(badgeData.svg, config);
+    } else if (type === 'JSON') {
+      text = JSON.stringify(config, null, 2);
     }
-    else if (type === 'JSON') text = JSON.stringify(config, null, 2);
-    
+
     handleCopy(text, type);
     setShowExport(false);
   };
@@ -278,6 +322,7 @@ const App = ({ mode }) => {
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               <LivePreview 
                 svg={badgeData.svg} 
+                config={config}
                 onDragStart={handleDragStart} 
                 dragState={dragState}
                 statusMsg={toast.open ? toast.message : ''} 

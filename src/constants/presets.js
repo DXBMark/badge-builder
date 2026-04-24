@@ -15,6 +15,19 @@ export const PRESET_CATEGORIES = [
   { id: 'gradient', label: 'Gradients' }
 ];
 
+export const PRESET_CONFIG_DEFAULTS = {
+  fontFamily: 'sans-serif',
+  iconType: 'none',
+  iconMode: 'preset',
+  autoWidth: false,
+  smartAlign: true,
+};
+
+export const normalizePresetConfig = (config = {}) => ({
+  ...PRESET_CONFIG_DEFAULTS,
+  ...config,
+});
+
 export const BASE_PRESETS = [
   // --- BRAND / FEATURED ---
   {

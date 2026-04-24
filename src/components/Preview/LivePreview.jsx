@@ -27,7 +27,15 @@ const BACKGROUNDS = {
   readme: '#ffffff'
 };
 
-const LivePreview = ({ svg, onDragStart, dragState, statusMsg, onCopy }) => {
+const createMarkdownSnippet = (config) => {
+  const label = config.leftText || 'Badge';
+  const value = config.rightText || 'Value';
+  const color = (config.rightBg || '#4c1').replace('#', '');
+
+  return `![${label}](https://img.shields.io/badge/${encodeURIComponent(label)}-${encodeURIComponent(value)}-${color})`;
+};
+
+const LivePreview = ({ svg, config, onDragStart, dragState, statusMsg, onCopy }) => {
   const [zoom, setZoom] = React.useState(1);
   const [bgMode, setBgMode] = React.useState('transparent');
   const [previewMode, setPreviewMode] = React.useState('single'); // 'single', 'readme', 'profile'
@@ -174,8 +182,7 @@ const LivePreview = ({ svg, onDragStart, dragState, statusMsg, onCopy }) => {
         variant="outlined" 
         startIcon={<ContentCopy fontSize="inherit" />}
         onClick={() => {
-           // Basic MD copy for single badge
-           const md = `![Badge](https://img.shields.io/badge/Preview-Badge-green)`;
+           const md = createMarkdownSnippet(config);
            onCopy(md, 'Markdown Link');
         }}
         sx={{ fontWeight: 800, fontSize: '0.65rem' }}
