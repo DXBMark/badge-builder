@@ -38,10 +38,14 @@ export const useDrag = (config, setConfig) => {
     if (!dragState) return;
     const dx = e.clientX - dragState.startX;
     const dy = e.clientY - dragState.startY;
+
+    // Clamp coordinates to stay roughly within badge limits (-500 to +500)
+    const clamp = (val) => Math.max(-1000, Math.min(1000, val));
+
     setConfig(prev => ({
       ...prev,
-      [dragState.keyX]: dragState.initX + dx,
-      [dragState.keyY]: dragState.initY + dy
+      [dragState.keyX]: clamp(dragState.initX + dx),
+      [dragState.keyY]: clamp(dragState.initY + dy)
     }));
   }, [dragState, setConfig]);
 

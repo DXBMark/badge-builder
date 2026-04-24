@@ -71,7 +71,7 @@ const App = ({ mode }) => {
     path: 'badge.svg' 
   });
 
-  const { handleDragStart, handleDragMove, handleDragEnd } = useDrag(config, setConfig);
+  const { handleDragStart, handleDragMove, handleDragEnd, dragState } = useDrag(config, setConfig);
 
   /*
    * [TS] Persist Custom Presets
@@ -230,6 +230,7 @@ const App = ({ mode }) => {
               <LivePreview 
                 svg={badgeData.svg} 
                 onDragStart={handleDragStart} 
+                dragState={dragState}
                 statusMsg={toast.open ? toast.message : ''} 
               />
               <SvgSource 
