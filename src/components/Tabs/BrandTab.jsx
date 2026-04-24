@@ -12,13 +12,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import { BUILT_IN_BRANDS } from '../../constants/brands';
 
+import { getContrastColor } from '../../utils/sanitize';
+
 const BrandCard = ({ brand, onApply, onDelete, isCustom }) => {
   const applyBrand = () => {
     onApply({
       leftBg: brand.colors.primary,
       rightBg: brand.colors.secondary,
-      leftTextColor: brand.colors.textDark || brand.colors.textLight,
-      rightTextColor: brand.colors.textLight,
+      leftTextColor: getContrastColor(brand.colors.primary),
+      rightTextColor: getContrastColor(brand.colors.secondary),
       gradStart: brand.colors.gradientStart,
       gradEnd: brand.colors.gradientEnd,
       fontFamily: brand.typography.fontFamily,

@@ -18,11 +18,11 @@ import SearchIcon from '@mui/icons-material/Search';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { BASE_PRESETS, PRESET_CATEGORIES } from '../../constants/presets';
-import { renderBadgeSvg } from '../../core/svgRenderer';
+import { buildSVG } from '../../utils/svgBuilder';
 
 const PresetCard = ({ preset, onApply, onDelete, isCustom = false }) => {
   const [isFav, setIsFav] = React.useState(false);
-  const svg = React.useMemo(() => renderBadgeSvg(preset.config), [preset.config]);
+  const svg = React.useMemo(() => buildSVG(preset.config).svg, [preset.config]);
 
   return (
     <Paper 
