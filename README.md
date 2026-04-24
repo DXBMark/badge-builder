@@ -10,7 +10,7 @@
 [![SVG](https://img.shields.io/badge/SVG-Vector-FFB13B?style=for-the-badge&logo=svg&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/SVG)
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev/)
 [![MIT License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](./LICENSE)
-[![Version](https://img.shields.io/badge/Version-v1.0.0-blue?style=for-the-badge)](https://github.com/tariqsaidofficial/badge-builder/releases/tag/v1.0.0)
+[![Version](https://img.shields.io/badge/Version-v1.0.0-blue?style=for-the-badge)](https://github.com/DXBMark/badge-builder/releases/tag/v1.0.0)
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen?style=for-the-badge&logo=github)](https://dxbmark.github.io/badge-builder/)
 
 </div>
@@ -79,7 +79,7 @@
 ### Installation
 
 ```bash
-git clone https://github.com/tariqsaidofficial/badge-builder.git
+git clone https://github.com/DXBMark/badge-builder.git
 cd badge-builder
 npm install
 npm run dev

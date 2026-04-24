@@ -65,7 +65,7 @@ const App = ({ mode }) => {
   const [toast, setToast] = useState({ open: false, message: '', severity: 'info' });
   const [showExport, setShowExport] = useState(false);
   const [gitHubContext, setGitHubContext] = useState({ 
-    user: 'tariqsaidofficial', 
+    user: 'DXBMark', 
     repo: 'badge-builder', 
     branch: 'main', 
     path: 'badge.svg' 
@@ -288,7 +288,7 @@ const App = ({ mode }) => {
               </Link>
               <Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />
               <Link 
-                href="https://github.com/tariqsaidofficial/badge-builder.git" 
+                href="https://github.com/DXBMark/badge-builder.git" 
                 target="_blank" 
                 sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'text.primary', fontWeight: 700, underline: 'none' }}
               >
