@@ -6,7 +6,7 @@
  */
 
 import { escapeXml, sanitize } from './sanitize';
-import { ICON_MAP } from '../constants/icons';
+import { ICON_LIBRARY, LEGACY_ICON_MAP } from '../constants/icons';
 
 /**
  * [TS] Builds the SVG string based on the provided configuration.
@@ -38,8 +38,19 @@ export const buildSVG = (config) => {
     if (iconMode === 'custom' && customIconUrl) {
       return `<image data-drag="icon" style="cursor: grab;" href="${escapeXml(customIconUrl)}" x="${sanitize(iconX, -500, 500)}" y="${iY}" height="${24 * sanitize(iconScale, 0.1, 5)}" width="${24 * sanitize(iconScale, 0.1, 5)}" />`;
     }
-    if (iconMode === 'preset' && iconType !== 'none' && ICON_MAP[iconType]) {
-      return `<g data-drag="icon" style="cursor: grab;" transform="translate(${sanitize(iconX, -500, 500)}, ${iY}) scale(${sanitize(iconScale, 0.1, 5)})" stroke="${escapeXml(leftTextColor)}" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">${ICON_MAP[iconType]}</g>`;
+    if (iconMode === 'preset' && iconType !== 'none') {
+      let iconSvg = '';
+      if (ICON_LIBRARY[iconType]) {
+        iconSvg = ICON_LIBRARY[iconType].svg;
+      } else if (LEGACY_ICON_MAP[iconType]) {
+        iconSvg = LEGACY_ICON_MAP[iconType];
+      }
+      
+      if (iconSvg) {
+        // Strip out the wrapping <svg> tag if present so we can wrap it in a <g> and control color
+        const innerContent = iconSvg.replace(/<svg[^>]*>|<\/svg>/g, '');
+        return `<g data-drag="icon" style="cursor: grab;" transform="translate(${sanitize(iconX, -500, 500)}, ${iY}) scale(${sanitize(iconScale, 0.1, 5)})" fill="${escapeXml(leftTextColor)}">${innerContent}</g>`;
+      }
     }
     return '';
   };

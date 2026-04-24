@@ -1,32 +1,127 @@
 /*
- * Project: SVG Badge Builder
+ * Project: Badge Builder Pro
  * Author: [TS]
- * Purpose: UI Icons and Badge Icon Maps
- * Notes: Follow TS conventions.
+ * Purpose: Icon Asset Library (Phase 4)
+ * Notes: Combines Simple Icons and Lucide for a robust local icon system.
  */
 
-export const UI_ICONS = {
-  copy: "M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3",
-  download: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4",
-  code: "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4",
-  type: "M3 7V5h14v2M10 5v14m-4 0h8",
-  layout: "M4 4h16v16H4V4zm0 4h16m-8 0v12",
-  palette: "M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-2.239 4-5 4h-1.5c-.276 0-.5.224-.5.5v1.5c0 1.105-.895 2-2 2zm-5-9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm4-3a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm4 3a1.5 1.5 0 100-3 1.5 1.5 0 000 3z",
-  settings: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
-  check: "M5 13l4 4L19 7",
-  upload: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12",
-  trash: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16",
-  x: "M6 18L18 6M6 6l12 12",
-  github: "M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.379.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z",
-  save: "M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+import * as si from 'simple-icons';
+import { icons as lucideIcons } from 'lucide';
+
+// --- HELPER TO EXTRACT SVG FROM SIMPLE ICONS ---
+// SimpleIcons objects have { title, slug, hex, source, svg, path }
+const createSimpleIcon = (icon) => {
+  if (!icon) return '';
+  return `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="${icon.path}"/></svg>`;
 };
 
-export const ICON_MAP = {
-  none: null,
-  code: '<path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16" />',
-  chevrons: '<path d="m13 17 5-5-5-5M6 17l5-5-5-5" />',
-  star: '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />',
-  bolt: '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />',
-  terminal: '<path d="m4 17 6-6-6-6M12 19h8" />',
-  heart: '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />'
+// --- HELPER TO EXTRACT SVG FROM LUCIDE ---
+// Lucide icons have a string representation if we convert them, or we can just use the SVG node.
+// Actually, lucide exports icons as objects. Let's create a builder.
+const createLucideIcon = (name) => {
+  const icon = lucideIcons[name];
+  if (!icon) return '';
+  // Convert Lucide node tree to SVG string
+  const attrs = Object.entries(icon[1] || {}).map(([k, v]) => `${k}="${v}"`).join(' ');
+  const children = (icon[2] || []).map(child => {
+    const childAttrs = Object.entries(child[1] || {}).map(([k, v]) => `${k}="${v}"`).join(' ');
+    return `<${child[0]} ${childAttrs}></${child[0]}>`;
+  }).join('');
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-${name}" ${attrs}>${children}</svg>`;
+};
+
+export const ICON_CATEGORIES = [
+  { id: 'languages', label: 'Languages' },
+  { id: 'frameworks', label: 'Frameworks' },
+  { id: 'devtools', label: 'DevTools' },
+  { id: 'databases', label: 'Databases' },
+  { id: 'cloud', label: 'Cloud' },
+  { id: 'os', label: 'OS' },
+  { id: 'social', label: 'Social' },
+  { id: 'generic', label: 'Generic' },
+  { id: 'ci', label: 'CI/CD' },
+  { id: 'package', label: 'Package Mgr' }
+];
+
+// Curated list of mapped icons
+export const ICON_LIBRARY = {
+  // Languages
+  'javascript': { category: 'languages', svg: createSimpleIcon(si.siJavascript), defaultColor: `#${si.siJavascript?.hex}` },
+  'typescript': { category: 'languages', svg: createSimpleIcon(si.siTypescript), defaultColor: `#${si.siTypescript?.hex}` },
+  'python': { category: 'languages', svg: createSimpleIcon(si.siPython), defaultColor: `#${si.siPython?.hex}` },
+  'go': { category: 'languages', svg: createSimpleIcon(si.siGo), defaultColor: `#${si.siGo?.hex}` },
+  'rust': { category: 'languages', svg: createSimpleIcon(si.siRust), defaultColor: `#${si.siRust?.hex}` },
+  'php': { category: 'languages', svg: createSimpleIcon(si.siPhp), defaultColor: `#${si.siPhp?.hex}` },
+  'ruby': { category: 'languages', svg: createSimpleIcon(si.siRuby), defaultColor: `#${si.siRuby?.hex}` },
+  'java': { category: 'languages', svg: createSimpleIcon(si.siOpenjdk), defaultColor: `#${si.siOpenjdk?.hex}` },
+
+  // Frameworks
+  'react': { category: 'frameworks', svg: createSimpleIcon(si.siReact), defaultColor: `#${si.siReact?.hex}` },
+  'vue': { category: 'frameworks', svg: createSimpleIcon(si.siVuedotjs), defaultColor: `#${si.siVuedotjs?.hex}` },
+  'angular': { category: 'frameworks', svg: createSimpleIcon(si.siAngular), defaultColor: `#${si.siAngular?.hex}` },
+  'svelte': { category: 'frameworks', svg: createSimpleIcon(si.siSvelte), defaultColor: `#${si.siSvelte?.hex}` },
+  'nextjs': { category: 'frameworks', svg: createSimpleIcon(si.siNextdotjs), defaultColor: `#${si.siNextdotjs?.hex}` },
+  'django': { category: 'frameworks', svg: createSimpleIcon(si.siDjango), defaultColor: `#${si.siDjango?.hex}` },
+  'laravel': { category: 'frameworks', svg: createSimpleIcon(si.siLaravel), defaultColor: `#${si.siLaravel?.hex}` },
+  'spring': { category: 'frameworks', svg: createSimpleIcon(si.siSpring), defaultColor: `#${si.siSpring?.hex}` },
+
+  // DevTools
+  'git': { category: 'devtools', svg: createSimpleIcon(si.siGit), defaultColor: `#${si.siGit?.hex}` },
+  'github': { category: 'devtools', svg: createSimpleIcon(si.siGithub), defaultColor: `#${si.siGithub?.hex}` },
+  'gitlab': { category: 'devtools', svg: createSimpleIcon(si.siGitlab), defaultColor: `#${si.siGitlab?.hex}` },
+  'docker': { category: 'devtools', svg: createSimpleIcon(si.siDocker), defaultColor: `#${si.siDocker?.hex}` },
+  'vscode': { category: 'devtools', svg: createSimpleIcon(si.siVisualstudiocode), defaultColor: `#${si.siVisualstudiocode?.hex}` },
+  'vim': { category: 'devtools', svg: createSimpleIcon(si.siVim), defaultColor: `#${si.siVim?.hex}` },
+
+  // Databases
+  'postgres': { category: 'databases', svg: createSimpleIcon(si.siPostgresql), defaultColor: `#${si.siPostgresql?.hex}` },
+  'mysql': { category: 'databases', svg: createSimpleIcon(si.siMysql), defaultColor: `#${si.siMysql?.hex}` },
+  'mongodb': { category: 'databases', svg: createSimpleIcon(si.siMongodb), defaultColor: `#${si.siMongodb?.hex}` },
+  'redis': { category: 'databases', svg: createSimpleIcon(si.siRedis), defaultColor: `#${si.siRedis?.hex}` },
+  'sqlite': { category: 'databases', svg: createSimpleIcon(si.siSqlite), defaultColor: `#${si.siSqlite?.hex}` },
+
+  // Cloud
+  'aws': { category: 'cloud', svg: createSimpleIcon(si.siAmazonwebservices), defaultColor: `#${si.siAmazonwebservices?.hex}` },
+  'gcp': { category: 'cloud', svg: createSimpleIcon(si.siGooglecloud), defaultColor: `#${si.siGooglecloud?.hex}` },
+  'azure': { category: 'cloud', svg: createSimpleIcon(si.siMicrosoftazure), defaultColor: `#${si.siMicrosoftazure?.hex}` },
+  'vercel': { category: 'cloud', svg: createSimpleIcon(si.siVercel), defaultColor: `#${si.siVercel?.hex}` },
+  'cloudflare': { category: 'cloud', svg: createSimpleIcon(si.siCloudflare), defaultColor: `#${si.siCloudflare?.hex}` },
+
+  // OS
+  'linux': { category: 'os', svg: createSimpleIcon(si.siLinux), defaultColor: `#${si.siLinux?.hex}` },
+  'apple': { category: 'os', svg: createSimpleIcon(si.siApple), defaultColor: `#${si.siApple?.hex}` },
+  'windows': { category: 'os', svg: createSimpleIcon(si.siWindows), defaultColor: `#${si.siWindows?.hex}` },
+  'ubuntu': { category: 'os', svg: createSimpleIcon(si.siUbuntu), defaultColor: `#${si.siUbuntu?.hex}` },
+
+  // Social
+  'twitter': { category: 'social', svg: createSimpleIcon(si.siX), defaultColor: `#${si.siX?.hex}` },
+  'linkedin': { category: 'social', svg: createSimpleIcon(si.siLinkedin), defaultColor: `#${si.siLinkedin?.hex}` },
+  'youtube': { category: 'social', svg: createSimpleIcon(si.siYoutube), defaultColor: `#${si.siYoutube?.hex}` },
+  'discord': { category: 'social', svg: createSimpleIcon(si.siDiscord), defaultColor: `#${si.siDiscord?.hex}` },
+
+  // Package Mgr
+  'npm': { category: 'package', svg: createSimpleIcon(si.siNpm), defaultColor: `#${si.siNpm?.hex}` },
+  'yarn': { category: 'package', svg: createSimpleIcon(si.siYarn), defaultColor: `#${si.siYarn?.hex}` },
+  'pnpm': { category: 'package', svg: createSimpleIcon(si.siPnpm), defaultColor: `#${si.siPnpm?.hex}` },
+  'homebrew': { category: 'package', svg: createSimpleIcon(si.siHomebrew), defaultColor: `#${si.siHomebrew?.hex}` },
+
+  // Generic (Lucide)
+  'star': { category: 'generic', svg: createLucideIcon('Star'), defaultColor: '#FFD700' },
+  'heart': { category: 'generic', svg: createLucideIcon('Heart'), defaultColor: '#FF5A5F' },
+  'zap': { category: 'generic', svg: createLucideIcon('Zap'), defaultColor: '#F5A623' },
+  'shield': { category: 'generic', svg: createLucideIcon('Shield'), defaultColor: '#4A90E2' },
+  'terminal': { category: 'generic', svg: createLucideIcon('Terminal'), defaultColor: '#4A4A4A' },
+  'code': { category: 'generic', svg: createLucideIcon('Code'), defaultColor: '#9B9B9B' },
+  'box': { category: 'generic', svg: createLucideIcon('Box'), defaultColor: '#8B572A' },
+  'check': { category: 'generic', svg: createLucideIcon('CheckCircle'), defaultColor: '#7ED321' },
+  'alert': { category: 'generic', svg: createLucideIcon('AlertTriangle'), defaultColor: '#F8E71C' }
+};
+
+// Legacy fallback for old icon keys (maps to new keys)
+export const LEGACY_ICON_MAP = {
+  'github': ICON_LIBRARY['github']?.svg || '',
+  'terminal': ICON_LIBRARY['terminal']?.svg || '',
+  'code': ICON_LIBRARY['code']?.svg || '',
+  'bolt': ICON_LIBRARY['zap']?.svg || '',
+  'react': ICON_LIBRARY['react']?.svg || ''
 };
