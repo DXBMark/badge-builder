@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -31,7 +29,8 @@ body {
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900;
+    background-color: #f8fafc;
+    color: #0f172a;
   }
 }
 

@@ -26,16 +26,16 @@ const ColorField = ({ label, value, onChange }) => {
   };
 
   return (
-    <Box sx={{ mb: 1.5 }}>
-      <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', display: 'block', mb: 0.75, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: '0.7rem' }}>
+    <Box sx={{ mb: 1 }}>
+      <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', display: 'block', mb: 0.5, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: '0.7rem' }}>
         {label}
       </Typography>
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
         {/* 🎨 Color swatch that opens the native picker */}
         <Box
           sx={{
-            width: 40,
-            height: 40,
+            width: 36,
+            height: 36,
             borderRadius: 1.5,
             background: isValidHex ? value : '#000000',
             border: '2px solid',
@@ -64,7 +64,7 @@ const ColorField = ({ label, value, onChange }) => {
               value={value}
               onChange={handleChange}
               error={!isValidHex}
-              sx={{ mb: 0, width: '100%', '& .MuiInputBase-root': { height: 40, fontSize: '0.8rem', fontFamily: '"Fira Code", monospace', letterSpacing: '0.05em' } }}
+              sx={{ mb: 0, width: '100%', '& .MuiInputBase-root': { height: 36, fontSize: '0.8rem', fontFamily: '"Fira Code", monospace', letterSpacing: '0.05em' } }}
             />
           </Box>
         </Tooltip>
@@ -77,7 +77,7 @@ const ColorField = ({ label, value, onChange }) => {
  * [TS] Section header component.
  */
 const SectionHeader = ({ title, icon }) => (
-  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
     {icon && <Box sx={{ color: 'text.disabled', display: 'flex' }}>{icon}</Box>}
     <Typography variant="overline" sx={{ fontWeight: 900, color: 'text.primary', letterSpacing: '0.1em', lineHeight: 1 }}>
       {title}
@@ -96,14 +96,14 @@ const StyleTab = ({ config, update }) => (
 
     {/* ── Background & Text ─────────────────── */}
     <SectionHeader title="Background & Text" />
-    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
+    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1.5 }}>
       <ColorField label="Label BG" value={config.leftBg} onChange={v => update('leftBg', v)} />
       <ColorField label="Value BG" value={config.rightBg} onChange={v => update('rightBg', v)} />
       <ColorField label="Label Text" value={config.leftTextColor} onChange={v => update('leftTextColor', v)} />
       <ColorField label="Value Text" value={config.rightTextColor} onChange={v => update('rightTextColor', v)} />
     </Box>
 
-    <Divider sx={{ my: 3 }} />
+    <Divider sx={{ my: 2 }} />
 
     {/* ── Gradient – Shields.io style ───────── */}
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
@@ -123,18 +123,18 @@ const StyleTab = ({ config, update }) => (
     </Box>
 
     {config.useGradient && (
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2, mt: 0.5 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1.5, mt: 0.5 }}>
         <ColorField label="Start Color" value={config.gradStart} onChange={v => update('gradStart', v)} />
         <ColorField label="End Color" value={config.gradEnd} onChange={v => update('gradEnd', v)} />
       </Box>
     )}
 
-    <Divider sx={{ my: 3 }} />
+    <Divider sx={{ my: 2 }} />
 
     {/* ── Shape & Outline ───── */}
     <SectionHeader title="Shape & Outline" />
 
-    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2, mb: 1 }}>
+    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1.5, mb: 0.5 }}>
       {/* Border Radius */}
       <Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0 }}>
@@ -179,7 +179,7 @@ const StyleTab = ({ config, update }) => (
     </Box>
 
     {/* Outline Color */}
-    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
+    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1.5 }}>
       <ColorField label="Outline Color" value={config.outlineColor} onChange={v => update('outlineColor', v)} />
     </Box>
 

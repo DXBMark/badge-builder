@@ -50,14 +50,14 @@ const IconTab = ({ config, update, onFileUpload }) => {
         exclusive
         onChange={(_, mode) => mode && update('iconMode', mode === 'preset' ? 'preset' : 'custom-svg')}
         size="small"
-        sx={{ mb: 2.5 }}
+        sx={{ mb: 2 }}
       >
         <ToggleButton value="preset"  sx={{ fontWeight: 800, fontSize: '0.625rem' }}>ICON LIBRARY</ToggleButton>
         <ToggleButton value="custom"  sx={{ fontWeight: 800, fontSize: '0.625rem' }}>CUSTOM ASSETS</ToggleButton>
       </ToggleButtonGroup>
 
       {config.iconMode === 'preset' ? (
-        <Stack spacing={2}>
+        <Stack spacing={1.5}>
           {/* Smart search */}
           <TextField
             fullWidth
@@ -81,12 +81,12 @@ const IconTab = ({ config, update, onFileUpload }) => {
             {search ? ` matching "${search}"` : ' available'}
           </Typography>
 
-          {/* Icon grid — no inner-scroll wrapper; parent Tab area scrolls */}
+          {/* Icon grid — 8 per row, compact */}
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(5, 1fr)',
-              gap: 1,
+              gridTemplateColumns: 'repeat(8, 1fr)',
+              gap: 0.5,
             }}
           >
             {/* None button */}
@@ -96,13 +96,13 @@ const IconTab = ({ config, update, onFileUpload }) => {
                 onClick={() => update('iconType', 'none')}
                 sx={{
                   aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  cursor: 'pointer', border: '2px solid',
+                  cursor: 'pointer', border: '1.5px solid',
                   borderColor: activeIconKey === 'none' ? 'primary.main' : 'divider',
-                  bgcolor: 'background.paper', borderRadius: 2,
+                  bgcolor: 'background.paper', borderRadius: 1.5,
                   '&:hover': { borderColor: 'primary.main' },
                 }}
               >
-                <Typography sx={{ fontSize: '1rem', color: 'text.secondary', lineHeight: 1 }}>×</Typography>
+                <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', lineHeight: 1 }}>×</Typography>
               </Paper>
             </Tooltip>
 
@@ -113,16 +113,16 @@ const IconTab = ({ config, update, onFileUpload }) => {
                   onClick={() => update('iconType', k)}
                   sx={{
                     aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    cursor: 'pointer', border: '2px solid',
+                    cursor: 'pointer', border: '1.5px solid',
                     borderColor: activeIconKey === k ? 'primary.main' : 'divider',
                     bgcolor: activeIconKey === k ? 'action.selected' : 'background.paper',
-                    borderRadius: 2, transition: 'all 0.1s',
-                    '&:hover': { borderColor: 'primary.main', transform: 'scale(1.08)' },
+                    borderRadius: 1.5, transition: 'all 0.1s',
+                    '&:hover': { borderColor: 'primary.main', transform: 'scale(1.1)' },
                   }}
                 >
                   <Box
                     sx={{
-                      width: 20, height: 20,
+                      width: 16, height: 16,
                       color: activeIconKey === k ? 'primary.main' : 'text.secondary',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       '& svg': { width: '100%', height: '100%' },
@@ -171,7 +171,7 @@ const IconTab = ({ config, update, onFileUpload }) => {
       )}
 
       {/* Icon scale */}
-      <Box sx={{ mt: 3.5 }}>
+      <Box sx={{ mt: 2 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
           <Typography variant="overline" sx={{ fontWeight: 800, color: 'text.secondary' }}>Icon Scale</Typography>
           <Typography variant="overline" sx={{ fontWeight: 900, color: 'primary.main' }}>{config.iconScale}x</Typography>
