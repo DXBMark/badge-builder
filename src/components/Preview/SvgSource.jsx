@@ -5,8 +5,9 @@
  * Notes: Fixed dark theme, icon colors, and code readability.
  */
 
-import React, { useMemo } from 'react';
-import { Paper, Box, Typography, IconButton, Tooltip, Chip, Tabs, Tab } from '@mui/material';
+import React, { useMemo, useState } from 'react';
+import { Paper, Box, Typography, IconButton, Tooltip, Chip, Tabs, Tab, Button } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CodeIcon from '@mui/icons-material/Code';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -15,6 +16,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 const SvgSource = ({ svg, config, onCopy }) => {
   const [activeTab, setActiveTab] = React.useState('svg');
+  const [expanded, setExpanded] = useState(false);
 
   const snippets = useMemo(() => {
     const md = `![${config.leftText}](https://img.shields.io/badge/${encodeURIComponent(config.leftText)}-${encodeURIComponent(config.rightText)}-${config.rightBg.replace('#', '')})`;
@@ -43,7 +45,7 @@ const SvgSource = ({ svg, config, onCopy }) => {
   const activeContent = snippets[activeTab];
 
   return (
-    <Paper sx={{ bgcolor: '#161C24', borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)', height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Paper sx={{ bgcolor: '#161C24', borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column' }}>
       {/* Tab Navigation */}
       <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.06)', bgcolor: '#0D1117' }}>
         <Tabs 
@@ -109,10 +111,34 @@ const SvgSource = ({ svg, config, onCopy }) => {
         </Box>
       </Box>
 
-      {/* Code area */}
-      <Box sx={{ p: 2, flex: 1, minHeight: 0, overflowY: 'auto' }}>
-        <Box component="pre" sx={{ m: 0, fontFamily: '"Fira Code", monospace', fontSize: '0.7rem', lineHeight: 1.6, color: '#919EAB', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
-          {activeContent}
+      {/* Code area — collapsed or expanded */}
+      <Box sx={{ position: 'relative' }}>
+        <Box
+          sx={{
+            p: 2,
+            maxHeight: expanded ? 'none' : 130,
+            overflow: 'hidden',
+            transition: 'max-height 0.3s ease',
+          }}
+        >
+          <Box component="pre" sx={{ m: 0, fontFamily: '"Fira Code", monospace', fontSize: '0.7rem', lineHeight: 1.6, color: '#919EAB', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+            {activeContent}
+          </Box>
+        </Box>
+
+        {/* Gradient fade + View More / Collapse */}
+        {!expanded && (
+          <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 60, background: 'linear-gradient(transparent, #161C24)', pointerEvents: 'none' }} />
+        )}
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 0.5, bgcolor: '#161C24' }}>
+          <Button
+            size="small"
+            onClick={() => setExpanded(v => !v)}
+            endIcon={<ExpandMoreIcon sx={{ fontSize: 14, transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />}
+            sx={{ fontSize: '0.6rem', fontWeight: 800, color: '#4D5F70', textTransform: 'uppercase', letterSpacing: '0.08em', '&:hover': { color: 'primary.main' } }}
+          >
+            {expanded ? 'Collapse' : 'View Full'}
+          </Button>
         </Box>
       </Box>
     </Paper>

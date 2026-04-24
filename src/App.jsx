@@ -221,7 +221,7 @@ const App = ({ mode }) => {
 
   return (
     <Box 
-      sx={{ height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', bgcolor: 'background.default', transition: 'background-color 0.3s ease' }}
+      sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'background.default', transition: 'background-color 0.3s ease' }}
       onMouseMove={handleDragMove} 
       onMouseUp={handleDragEnd}
       onMouseLeave={handleDragEnd}
@@ -269,36 +269,32 @@ const App = ({ mode }) => {
         </Container>
       </AppBar>
 
-      {/* [TS] One-page content — fills remaining viewport height after AppBar */}
-      <Box sx={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
-        <Container maxWidth="xl" sx={{ height: '100%', display: 'flex', flexDirection: 'column', py: 2 }}>
-          <Box sx={{ flex: 1, minHeight: 0, display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '7fr 5fr' }, gap: 4 }}>
+      {/* Main content — natural page scroll */}
+      <Box sx={{ flex: 1 }}>
+        <Container maxWidth="xl" sx={{ py: 3 }}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '7fr 5fr' }, gap: 4, alignItems: 'start' }}>
 
             {/* Left column — Preview + Source */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, minHeight: 0, overflow: 'hidden' }}>
-              <Box sx={{ flexShrink: 0 }}>
-                <LivePreview 
-                  svg={badgeData.svg} 
-                  onDragStart={handleDragStart} 
-                  dragState={dragState}
-                  statusMsg={toast.open ? toast.message : ''} 
-                  onCopy={handleCopy}
-                />
-              </Box>
-              <Box sx={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
-                <SvgSource 
-                  svg={badgeData.svg} 
-                  config={config}
-                  onCopy={handleCopy} 
-                />
-              </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <LivePreview 
+                svg={badgeData.svg} 
+                onDragStart={handleDragStart} 
+                dragState={dragState}
+                statusMsg={toast.open ? toast.message : ''} 
+                onCopy={handleCopy}
+              />
+              <SvgSource 
+                svg={badgeData.svg} 
+                config={config}
+                onCopy={handleCopy} 
+              />
             </Box>
 
-            {/* Right column — Editor + Diagnostics (no sticky, fully contained) */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, minHeight: 0, overflow: 'hidden' }}>
-              <Paper sx={{ flex: 1, minHeight: 0, borderRadius: 4, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            {/* Right column — Editor + Diagnostics */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <Paper sx={{ borderRadius: 4, overflow: 'hidden' }}>
                 <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
-                <Box sx={{ flex: 1, minHeight: 0, p: 3, overflowY: 'auto' }}>
+                <Box sx={{ p: 3, maxHeight: 'calc(100vh - 220px)', overflowY: 'auto' }}>
                   {activeTab === 'content' && <ContentTab config={config} update={update} />}
                   {activeTab === 'layout' && <LayoutTab config={config} update={update} />}
                   {activeTab === 'style' && <StyleTab config={config} update={update} />}
@@ -327,11 +323,23 @@ const App = ({ mode }) => {
                   )}
                 </Box>
               </Paper>
-              <Box sx={{ flexShrink: 0 }}>
-                <DiagnosticsPanel results={diagnostics} />
-              </Box>
+              <DiagnosticsPanel results={diagnostics} />
             </Box>
 
+          </Box>
+        </Container>
+      </Box>
+
+      {/* Footer */}
+      <Box component="footer" sx={{ mt: 'auto', py: 3, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
+        <Container maxWidth="xl">
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
+            <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 700 }}>
+              Badge Builder Pro — Open Source SVG Badge Generator
+            </Typography>
+            <Typography variant="caption" sx={{ color: 'text.disabled' }}>
+              Built with React 19 + Material UI v9
+            </Typography>
           </Box>
         </Container>
       </Box>
