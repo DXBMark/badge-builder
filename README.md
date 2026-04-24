@@ -27,7 +27,7 @@
 
 ## 📸 Preview
 
-> Preview image will be added soon.
+![SVG Badge Builder Preview](public/screencapture-badge-builder.png)
 
 ---
 
@@ -54,6 +54,7 @@
 | Build diagnostics panel (Shields.io standard checks) | ✅ |
 | Safe SVG text escaping and validation | ✅ |
 | Dark Mode support | ✅ |
+| Drag-and-drop text position editing | ✅ |
 
 ---
 
@@ -124,9 +125,9 @@ This project can be deployed to any static hosting platform:
 |---|---|
 | Custom SVG icon upload | ✅ Done |
 | PNG export | ✅ Done |
-| Drag-and-drop text position editing | 🔜 Planned |
+| Drag-and-drop text position editing | ✅ Done |
 | Saved custom presets | ✅ Done |
-| Theme presets (GitHub, NPM, Shields-style) | 🔜 Planned |
+| Theme presets (GitHub, NPM, Shields-style) | ✅ Done |
 | Dynamic badge API (generate via URL) | 🔜 Planned |
 | Embed generator (iframe widget) | 🔜 Planned |
 
