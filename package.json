@@ -39,6 +39,7 @@
     "@mui/icons-material": "^9.0.0",
     "@mui/material": "^9.0.0",
     "lucide": "^1.11.0",
+    "lz-string": "^1.5.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "simple-icons": "^16.17.0"

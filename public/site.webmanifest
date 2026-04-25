@@ -1,0 +1,24 @@
+{
+  "name": "Badge Builder Pro",
+  "short_name": "Badge Builder",
+  "description": "Free SVG badge generator for GitHub README badges, tech stacks, and developer branding.",
+  "start_url": "/badge-builder/",
+  "scope": "/badge-builder/",
+  "display": "standalone",
+  "background_color": "#f7f8fa",
+  "theme_color": "#0d1117",
+  "icons": [
+    {
+      "src": "/badge-builder/palette.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/badge-builder/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

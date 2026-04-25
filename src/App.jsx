@@ -27,6 +27,8 @@ import PaletteIcon from '@mui/icons-material/Palette';
 import DownloadIcon from '@mui/icons-material/Download';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
+import ShareIcon from '@mui/icons-material/Share';
+import CloudSyncIcon from '@mui/icons-material/CloudSync';
 
 // Context
 import { ColorModeContext } from './main';
@@ -36,6 +38,7 @@ import { BASE_PRESETS } from './constants/presets';
 import { buildSVG } from './utils/svgBuilder';
 import { downloadSVG, downloadPNG, downloadJSON } from './utils/export';
 import { useDrag } from './hooks/useDrag';
+import { encodeConfigToHash, decodeConfigFromHash } from './utils/shareConfig';
 
 // Components
 import LivePreview from './components/Preview/LivePreview';
@@ -49,9 +52,12 @@ import PresetsTab from './components/Tabs/PresetsTab';
 import GitHubTab from './components/Tabs/GitHubTab';
 import BulkTab from './components/Tabs/BulkTab';
 import ExportModal from './components/ExportModal';
+import ChangelogModal from './components/ChangelogModal';
 import DiagnosticsPanel from './components/DiagnosticsPanel';
 import { runDiagnostics } from './core/diagnostics';
 import BrandTab from './components/Tabs/BrandTab';
+import PackTab from './components/Tabs/PackTab';
+import WorkspaceModal from './components/WorkspaceModal';
 
 const cloneConfig = (value) => {
   if (typeof structuredClone === 'function') {
@@ -97,6 +103,8 @@ const App = ({ mode }) => {
   const [activeTab, setActiveTab] = useState('content');
   const [toast, setToast] = useState({ open: false, message: '', severity: 'info' });
   const [showExport, setShowExport] = useState(false);
+  const [showChangelog, setShowChangelog] = useState(false);
+  const [showWorkspace, setShowWorkspace] = useState(false);
   const [gitHubContext, setGitHubContext] = useState({ 
     user: 'DXBMark', 
     repo: 'badge-builder', 
@@ -105,6 +113,43 @@ const App = ({ mode }) => {
   });
 
   const { handleDragStart, handleDragMove, handleDragEnd, dragState } = useDrag(config, setConfig);
+
+  // Phase 8: Shareable Hash
+  useEffect(() => {
+    if (window.location.hash) {
+      const decoded = decodeConfigFromHash(window.location.hash);
+      if (decoded) {
+        setConfig(decoded);
+        setToast({ open: true, message: 'Loaded config from URL', severity: 'success' });
+      }
+    }
+  }, []);
+
+  const handleShareUrl = useCallback(() => {
+    try {
+      const hash = encodeConfigToHash(config);
+      window.location.hash = hash;
+      navigator.clipboard.writeText(window.location.href);
+      setToast({ open: true, message: 'Shareable URL Copied!', severity: 'success' });
+    } catch(e) {
+      setToast({ open: true, message: 'Failed to generate URL', severity: 'error' });
+    }
+  }, [config]);
+
+  // Phase 8: Workspace Restore
+  const handleRestoreWorkspace = useCallback((data) => {
+    if (data.presets) {
+      setCustomPresets(data.presets);
+      localStorage.setItem('ts_badge_presets_mui', JSON.stringify(data.presets));
+    }
+    if (data.brands) {
+      setCustomBrands(data.brands);
+      localStorage.setItem('ts_badge_brands_mui', JSON.stringify(data.brands));
+    }
+    // future: packs
+    // if (data.config) setConfig(data.config);
+    setToast({ open: true, message: 'Workspace Restored Successfully!', severity: 'success' });
+  }, []);
 
   /*
    * [TS] Persist Custom Presets
@@ -287,6 +332,20 @@ const App = ({ mode }) => {
             
             <Stack direction="row" spacing={1.5} alignItems="center">
               <IconButton 
+                onClick={handleShareUrl} 
+                title="Share via Config URL"
+                sx={{ color: 'text.secondary', '&:hover': { color: 'primary.main', bgcolor: 'action.hover' } }}
+              >
+                <ShareIcon />
+              </IconButton>
+              <IconButton 
+                onClick={() => setShowWorkspace(true)} 
+                title="Workspace Export/Import"
+                sx={{ color: 'text.secondary', '&:hover': { color: 'primary.main', bgcolor: 'action.hover' } }}
+              >
+                <CloudSyncIcon />
+              </IconButton>
+              <IconButton 
                 onClick={colorMode.toggleColorMode} 
                 sx={{ color: 'text.secondary', '&:hover': { color: 'primary.main', bgcolor: 'action.hover' } }}
               >
@@ -353,6 +412,7 @@ const App = ({ mode }) => {
                     />
                   )}
                   {activeTab === 'brand' && <BrandTab config={config} update={update} customBrands={customBrands} saveBrand={saveBrand} deleteBrand={deleteBrand} />}
+                  {activeTab === 'pack' && <PackTab config={config} onCopy={handleCopy} />}
                   {activeTab === 'github' && (
                     <GitHubTab 
                       context={gitHubContext} 
@@ -380,14 +440,29 @@ const App = ({ mode }) => {
         <Container maxWidth="xl">
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
             <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 700 }}>
-              © 2026 Badge Builder Pro by DXBMark Ltd. All rights reserved.
+              © {new Date().getFullYear()} Badge Builder Pro by DXBMark Ltd. All rights reserved.
             </Typography>
-            <Typography variant="caption" sx={{ color: 'text.disabled' }}>
-              Built with React 19 + Material UI v9
+            <Typography
+              component="button"
+              variant="caption"
+              onClick={() => setShowChangelog(true)}
+              sx={{ color: 'text.disabled', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', p: 0, '&:hover': { color: 'primary.main' } }}
+            >
+              Changelog
             </Typography>
           </Box>
         </Container>
       </Box>
+
+      <ChangelogModal open={showChangelog} onClose={() => setShowChangelog(false)} />
+
+      <WorkspaceModal 
+        open={showWorkspace} 
+        onClose={() => setShowWorkspace(false)} 
+        onRestoreWorkspace={handleRestoreWorkspace} 
+        customPresets={customPresets} 
+        customBrands={customBrands} 
+      />
 
       <ExportModal 
         show={showExport} 

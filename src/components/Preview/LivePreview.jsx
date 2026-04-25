@@ -18,13 +18,22 @@ import ContentCopy from '@mui/icons-material/ContentCopy';
 import Visibility from '@mui/icons-material/Visibility';
 import GridView from '@mui/icons-material/GridView';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
-import Icon from '../ui/Icon';
 
-const BACKGROUNDS = {
-  transparent: 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3MvLywXyWcmSEApQhoGBgYHBvLy8XECqhJkgCHCCsIEVCgAsjBBSBAA9XQAAAABJRU5ErkJggg==")',
-  light: '#ffffff',
-  dark: '#0d1117',
-  readme: '#ffffff'
+const BACKGROUND_STYLES = {
+  transparent: {
+    background: 'repeating-conic-gradient(#c8c8c8 0% 25%, #f4f4f4 0% 50%) 0 0 / 20px 20px',
+  },
+  light: {
+    backgroundColor: '#ffffff',
+  },
+  dark: {
+    backgroundColor: '#0d1117',
+    backgroundImage: 'radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 45%)',
+  },
+  github: {
+    backgroundColor: '#F7F8FA',
+    backgroundImage: 'linear-gradient(180deg, rgba(208,215,222,0.22), rgba(246,248,250,0) 140px)',
+  },
 };
 
 const createMarkdownSnippet = (config) => {
@@ -41,6 +50,8 @@ const LivePreview = ({ svg, config, onDragStart, dragState, statusMsg, onCopy })
   const [previewMode, setPreviewMode] = React.useState('single'); // 'single', 'readme', 'profile'
   
   const isDragging = !!dragState;
+  const isReadmePreview = previewMode === 'readme';
+  const isDarkPreview = bgMode === 'dark';
 
   const handleZoom = (delta) => setZoom(prev => Math.min(Math.max(prev + delta, 0.5), 3));
 
@@ -81,7 +92,7 @@ const LivePreview = ({ svg, config, onDragStart, dragState, statusMsg, onCopy })
           <ToggleButton value="transparent">GRID</ToggleButton>
           <ToggleButton value="light">LIGHT</ToggleButton>
           <ToggleButton value="dark">DARK</ToggleButton>
-          <ToggleButton value="readme">GITHUB</ToggleButton>
+          <ToggleButton value="github">GITHUB</ToggleButton>
         </ToggleButtonGroup>
       </Stack>
 
@@ -111,11 +122,11 @@ const LivePreview = ({ svg, config, onDragStart, dragState, statusMsg, onCopy })
         display: 'flex', 
         alignItems: 'center', 
         justifyContent: 'center',
-        background: BACKGROUNDS[bgMode],
+        ...BACKGROUND_STYLES[bgMode],
         minHeight: 200,
         cursor: isDragging ? 'grabbing' : 'default',
         position: 'relative',
-        transition: 'background 0.3s ease',
+        transition: 'background-color 0.3s ease, background-image 0.3s ease',
         overflow: 'auto'
       }} 
       onMouseDown={onDragStart}
@@ -130,10 +141,14 @@ const LivePreview = ({ svg, config, onDragStart, dragState, statusMsg, onCopy })
         alignItems: 'center',
         gap: 2,
         p: previewMode === 'single' ? 0 : 6,
-        bgcolor: previewMode === 'readme' ? '#ffffff' : 'transparent',
-        borderRadius: previewMode === 'readme' ? 2 : 0,
-        boxShadow: previewMode === 'readme' ? '0 0 40px rgba(0,0,0,0.1)' : 'none',
-        border: previewMode === 'readme' ? '1px solid #e1e4e8' : 'none',
+        bgcolor: isReadmePreview ? '#ffffff' : 'transparent',
+        borderRadius: isReadmePreview ? 2 : 0,
+        boxShadow: isReadmePreview
+          ? '0 0 0 1px rgba(208,215,222,0.8), 0 12px 30px rgba(31,35,40,0.08)'
+          : isDarkPreview
+            ? '0 18px 35px rgba(0,0,0,0.35)'
+            : 'none',
+        border: isReadmePreview ? '1px solid #d0d7de' : 'none',
         maxWidth: '90%'
       }}>
         {/* Overlay grid when dragging */}
@@ -146,7 +161,7 @@ const LivePreview = ({ svg, config, onDragStart, dragState, statusMsg, onCopy })
           }} />
         )}
         
-        {previewMode === 'readme' && (
+        {isReadmePreview && (
           <Box sx={{ mb: 2, borderBottom: '1px solid #e1e4e8', pb: 1, width: '100%', minWidth: 300 }}>
             <Typography sx={{ fontWeight: 600, fontSize: 14, color: '#0366d6', display: 'flex', alignItems: 'center', gap: 1 }}>
               <MenuBookIcon sx={{ fontSize: 16 }} /> README.md
@@ -154,15 +169,58 @@ const LivePreview = ({ svg, config, onDragStart, dragState, statusMsg, onCopy })
           </Box>
         )}
 
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <div dangerouslySetInnerHTML={{ __html: svg }} style={{ pointerEvents: isDragging ? 'none' : 'auto' }} />
-        </Box>
+        {previewMode !== 'profile' && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div dangerouslySetInnerHTML={{ __html: svg }} style={{ pointerEvents: isDragging ? 'none' : 'auto' }} />
+          </Box>
+        )}
 
         {previewMode === 'profile' && (
-           <Box sx={{ mt: 3, width: '100%', display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'center', opacity: 0.5 }}>
-             <Box sx={{ width: 40, height: 40, borderRadius: '50%', bgcolor: 'divider' }} />
-             <Box sx={{ width: 100, height: 10, borderRadius: 1, bgcolor: 'divider', mt: 1.5 }} />
-           </Box>
+          <Box
+            sx={{
+              mt: 3,
+              width: '100%',
+              minWidth: 320,
+              maxWidth: 420,
+              borderRadius: 3,
+              border: '1px solid',
+              borderColor: 'divider',
+              bgcolor: 'background.paper',
+              boxShadow: '0 10px 28px rgba(15,23,42,0.08)',
+              overflow: 'hidden',
+            }}
+          >
+            <Box sx={{ height: 54, bgcolor: 'action.hover' }} />
+            <Box sx={{ px: 2, pb: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1.5, mt: -2.5, mb: 1.5 }}>
+                <Box
+                  sx={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: '50%',
+                    border: '3px solid',
+                    borderColor: 'background.paper',
+                    bgcolor: 'divider',
+                    flexShrink: 0,
+                  }}
+                />
+                <Box sx={{ flex: 1, pb: 0.5 }}>
+                  <Box sx={{ width: '42%', height: 10, borderRadius: 999, bgcolor: 'text.primary', opacity: 0.16, mb: 0.8 }} />
+                  <Box sx={{ width: '28%', height: 8, borderRadius: 999, bgcolor: 'text.primary', opacity: 0.1 }} />
+                </Box>
+              </Box>
+
+              <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1.75 }}>
+                <div dangerouslySetInnerHTML={{ __html: svg }} style={{ pointerEvents: isDragging ? 'none' : 'auto' }} />
+              </Box>
+
+              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1 }}>
+                <Box sx={{ height: 42, borderRadius: 2, bgcolor: 'action.hover' }} />
+                <Box sx={{ height: 42, borderRadius: 2, bgcolor: 'action.hover' }} />
+                <Box sx={{ height: 42, borderRadius: 2, bgcolor: 'action.hover' }} />
+              </Box>
+            </Box>
+          </Box>
         )}
       </Box>
     </Box>
