@@ -10,23 +10,35 @@
     <title>Badge Builder Pro — SVG Badge Generator by DXBMark</title>
     <meta name="description" content="Badge Builder Pro is a free, open-source SVG badge generator for developers. Design custom GitHub README badges, tech-stack labels, and branding shields — no sign-up required." />
     <meta name="keywords" content="badge builder, svg badge, github badge, readme badge, shields.io alternative, tech stack badge, open source badge generator, DXBMark, developer tools" />
+        <meta name="application-name" content="Badge Builder Pro" />
+        <meta name="generator" content="Vite + React 19 + Material UI v9" />
     <meta name="author" content="DXBMark Ltd." />
+        <meta name="creator" content="DXBMark Ltd." />
+        <meta name="publisher" content="DXBMark Ltd." />
     <meta name="copyright" content="© 2026 Badge Builder Pro by DXBMark Ltd. All rights reserved." />
-    <meta name="robots" content="index, follow" />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
+        <meta name="format-detection" content="telephone=no, address=no, email=no" />
     <meta name="theme-color" content="#0d1117" />
+        <meta name="color-scheme" content="light dark" />
     <link rel="canonical" href="https://dxbmark.github.io/badge-builder/" />
+        <link rel="manifest" href="/badge-builder/site.webmanifest" />
+        <link rel="sitemap" type="application/xml" href="https://dxbmark.github.io/badge-builder/sitemap.xml" />
 
     <!-- ═══════════════════════════════════════════
          ICONS
     ═══════════════════════════════════════════ -->
     <link rel="icon" type="image/svg+xml" href="/badge-builder/palette.svg" />
     <link rel="apple-touch-icon" href="/badge-builder/favicon.svg" />
+        <link rel="shortcut icon" href="/badge-builder/favicon.svg" />
 
     <!-- ═══════════════════════════════════════════
          OPEN GRAPH (Facebook / LinkedIn / WhatsApp)
     ═══════════════════════════════════════════ -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Badge Builder Pro" />
+        <meta property="og:locale" content="en_US" />
     <meta property="og:title" content="Badge Builder Pro — SVG Badge Generator by DXBMark" />
     <meta property="og:description" content="Design professional SVG badges for GitHub README files, tech stacks, and branding. Free, open-source, no sign-up required." />
     <meta property="og:url" content="https://dxbmark.github.io/badge-builder/" />
@@ -34,12 +46,13 @@
     <meta property="og:image:width" content="1280" />
     <meta property="og:image:height" content="800" />
     <meta property="og:image:alt" content="Badge Builder Pro interface screenshot" />
-    <meta property="og:locale" content="en_US" />
+        <meta property="og:image:type" content="image/png" />
 
     <!-- ═══════════════════════════════════════════
          TWITTER / X CARD
     ═══════════════════════════════════════════ -->
     <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content="https://dxbmark.github.io/badge-builder/" />
     <meta name="twitter:title" content="Badge Builder Pro — SVG Badge Generator by DXBMark" />
     <meta name="twitter:description" content="Design professional SVG badges for GitHub README files, tech stacks, and branding. Free, open-source, no sign-up required." />
     <meta name="twitter:image" content="https://dxbmark.github.io/badge-builder/screencapture-badge-builder.png" />
@@ -53,36 +66,79 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Badge Builder Pro",
-      "description": "A free, open-source SVG badge generator for developers. Design custom GitHub README badges, tech-stack labels, and branding shields.",
-      "url": "https://dxbmark.github.io/badge-builder/",
-      "image": "https://dxbmark.github.io/badge-builder/screencapture-badge-builder.png",
-      "applicationCategory": "DeveloperApplication",
-      "operatingSystem": "Any",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "author": {
-        "@type": "Organization",
-        "name": "DXBMark Ltd.",
-        "url": "https://github.com/DXBMark"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "DXBMark Ltd.",
-        "url": "https://github.com/DXBMark"
-      },
-      "copyrightYear": "2026",
-      "copyrightHolder": {
-        "@type": "Organization",
-        "name": "DXBMark Ltd."
-      },
-      "license": "https://opensource.org/licenses/MIT",
-      "softwareVersion": "1.0.0",
-      "keywords": "svg badge, github badge, readme badge, developer tools, badge generator"
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://dxbmark.github.io/badge-builder/#website",
+          "url": "https://dxbmark.github.io/badge-builder/",
+          "name": "Badge Builder Pro",
+          "description": "Free SVG badge generator for GitHub README badges, technology stack labels, and branded developer shields.",
+          "publisher": {
+            "@id": "https://dxbmark.github.io/badge-builder/#organization"
+          },
+          "inLanguage": "en"
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://dxbmark.github.io/badge-builder/#organization",
+          "name": "DXBMark Ltd.",
+          "url": "https://github.com/DXBMark",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://dxbmark.github.io/badge-builder/palette.svg"
+          },
+          "sameAs": [
+            "https://github.com/DXBMark",
+            "https://portfolio.dxbmark.com/"
+          ]
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://dxbmark.github.io/badge-builder/#app",
+          "name": "Badge Builder Pro",
+          "applicationCategory": "DeveloperApplication",
+          "applicationSubCategory": "SVG Badge Generator",
+          "operatingSystem": "Web",
+          "softwareVersion": "1.0.0",
+          "url": "https://dxbmark.github.io/badge-builder/",
+          "image": "https://dxbmark.github.io/badge-builder/screencapture-badge-builder.png",
+          "screenshot": "https://dxbmark.github.io/badge-builder/screencapture-badge-builder.png",
+          "description": "A free, open-source badge builder for creating SVG badges for GitHub README files, developer portfolios, brand kits, and tech stack showcases.",
+          "creator": {
+            "@id": "https://dxbmark.github.io/badge-builder/#organization"
+          },
+          "publisher": {
+            "@id": "https://dxbmark.github.io/badge-builder/#organization"
+          },
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "license": "https://opensource.org/licenses/MIT",
+          "featureList": [
+            "Live SVG badge preview",
+            "Custom README badge generation",
+            "Brand kit presets",
+            "PNG and SVG export",
+            "Theme-aware preview backgrounds",
+            "GitHub README snippet generation"
+          ],
+          "keywords": "svg badge, github badge, readme badge, badge generator, developer tools"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://dxbmark.github.io/badge-builder/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://dxbmark.github.io/badge-builder/"
+            }
+          ]
+        }
+      ]
     }
     </script>
     <script type="module" crossorigin src="/badge-builder/assets/index-DDaCdomY.js"></script>

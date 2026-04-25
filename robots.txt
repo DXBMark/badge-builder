@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dxbmark.github.io/badge-builder/sitemap.xml
