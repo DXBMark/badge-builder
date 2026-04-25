@@ -58,16 +58,18 @@ const LivePreview = ({ svg, config, onDragStart, dragState, statusMsg, onCopy })
   return (
   <Paper sx={{ overflow: 'hidden', borderRadius: 4, border: isDragging ? '2px solid' : '1px solid', borderColor: isDragging ? 'primary.main' : 'divider', transition: 'all 0.2s' }}>
     <Box sx={{ 
-      px: 3, 
+      px: { xs: 2, sm: 3 }, 
       py: 1.5, 
       borderBottom: '1px solid',
       borderColor: 'divider',
       display: 'flex',
       justifyContent: 'space-between',
-      alignItems: 'center',
+      alignItems: { xs: 'stretch', sm: 'center' },
+      flexDirection: { xs: 'column', sm: 'row' },
+      gap: { xs: 1.25, sm: 0 },
       bgcolor: 'background.neutral'
     }}>
-      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap', rowGap: 1 }}>
         <Typography variant="overline" sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 900, color: isDragging ? 'primary.main' : 'text.secondary', mr: 2 }}>
           {isDragging ? 'DRAGGING...' : 'PREVIEW'}
         </Typography>
@@ -87,7 +89,7 @@ const LivePreview = ({ svg, config, onDragStart, dragState, statusMsg, onCopy })
           value={bgMode}
           exclusive
           onChange={(_, val) => val && setBgMode(val)}
-          sx={{ height: 28, '& .MuiToggleButton-root': { px: 1.5, fontSize: '0.65rem', fontWeight: 800 } }}
+          sx={{ height: 28, flexWrap: 'wrap', '& .MuiToggleButton-root': { px: { xs: 1, sm: 1.5 }, fontSize: '0.65rem', fontWeight: 800 } }}
         >
           <ToggleButton value="transparent">GRID</ToggleButton>
           <ToggleButton value="light">LIGHT</ToggleButton>
@@ -96,7 +98,7 @@ const LivePreview = ({ svg, config, onDragStart, dragState, statusMsg, onCopy })
         </ToggleButtonGroup>
       </Stack>
 
-      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: { xs: 'space-between', sm: 'flex-end' }, flexWrap: 'wrap', rowGap: 1 }}>
         <Fade in={!!statusMsg}>
           <Typography variant="caption" sx={{ fontWeight: 800, color: 'primary.main', mr: 2 }}>
             {statusMsg}
@@ -107,7 +109,7 @@ const LivePreview = ({ svg, config, onDragStart, dragState, statusMsg, onCopy })
           value={previewMode}
           exclusive
           onChange={(_, val) => val && setPreviewMode(val)}
-          sx={{ height: 28 }}
+          sx={{ height: 28, flexWrap: 'wrap' }}
         >
           <Tooltip title="Single Badge"><ToggleButton value="single"><Visibility fontSize="inherit" /></ToggleButton></Tooltip>
           <Tooltip title="README Context"><ToggleButton value="readme"><MenuBookIcon fontSize="inherit" /></ToggleButton></Tooltip>
@@ -123,7 +125,7 @@ const LivePreview = ({ svg, config, onDragStart, dragState, statusMsg, onCopy })
         alignItems: 'center', 
         justifyContent: 'center',
         ...BACKGROUND_STYLES[bgMode],
-        minHeight: 200,
+        minHeight: { xs: 160, sm: 200 },
         cursor: isDragging ? 'grabbing' : 'default',
         position: 'relative',
         transition: 'background-color 0.3s ease, background-image 0.3s ease',
@@ -140,7 +142,7 @@ const LivePreview = ({ svg, config, onDragStart, dragState, statusMsg, onCopy })
         flexDirection: 'column',
         alignItems: 'center',
         gap: 2,
-        p: previewMode === 'single' ? 0 : 6,
+        p: previewMode === 'single' ? 0 : { xs: 2, sm: 4, md: 6 },
         bgcolor: isReadmePreview ? '#ffffff' : 'transparent',
         borderRadius: isReadmePreview ? 2 : 0,
         boxShadow: isReadmePreview
@@ -149,7 +151,7 @@ const LivePreview = ({ svg, config, onDragStart, dragState, statusMsg, onCopy })
             ? '0 18px 35px rgba(0,0,0,0.35)'
             : 'none',
         border: isReadmePreview ? '1px solid #d0d7de' : 'none',
-        maxWidth: '90%'
+        maxWidth: { xs: '100%', sm: '90%' }
       }}>
         {/* Overlay grid when dragging */}
         {isDragging && (
@@ -162,7 +164,7 @@ const LivePreview = ({ svg, config, onDragStart, dragState, statusMsg, onCopy })
         )}
         
         {isReadmePreview && (
-          <Box sx={{ mb: 2, borderBottom: '1px solid #e1e4e8', pb: 1, width: '100%', minWidth: 300 }}>
+          <Box sx={{ mb: 2, borderBottom: '1px solid #e1e4e8', pb: 1, width: '100%', minWidth: { xs: 240, sm: 300 } }}>
             <Typography sx={{ fontWeight: 600, fontSize: 14, color: '#0366d6', display: 'flex', alignItems: 'center', gap: 1 }}>
               <MenuBookIcon sx={{ fontSize: 16 }} /> README.md
             </Typography>
@@ -180,7 +182,7 @@ const LivePreview = ({ svg, config, onDragStart, dragState, statusMsg, onCopy })
             sx={{
               mt: 3,
               width: '100%',
-              minWidth: 320,
+              minWidth: { xs: 260, sm: 320 },
               maxWidth: 420,
               borderRadius: 3,
               border: '1px solid',

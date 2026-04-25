@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { Box, Typography, Paper, IconButton, Tooltip, Stack, Grid, ToggleButtonGroup, ToggleButton, Divider, Button } from '@mui/material';
+import { Box, Typography, Paper, IconButton, Tooltip, Stack, Grid, ToggleButtonGroup, ToggleButton, Divider, Button, Alert } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import InputField from '../ui/InputField';
 
@@ -22,11 +22,24 @@ const GitHubTab = ({ context, setContext, onCopy }) => {
 
   const update = (key, val) => setContext(p => ({ ...p, [key]: val }));
 
+  // Sanitize URL path segments: trim whitespace, encode where needed
+  const seg = (v) => encodeURIComponent((v || '').trim());
+  // GitHub Actions workflow filename should NOT be double-encoded (path segment, not query value)
+  const plain = (v) => (v || '').trim().replace(/\s+/g, '-');
+
   const generateProjectBadges = () => {
-    const { user, repo, branch, workflow, style } = ctx;
+    const user = plain(ctx.user);
+    const repo = plain(ctx.repo);
+    const branch = plain(ctx.branch);
+    const workflow = plain(ctx.workflow);
+    const style = plain(ctx.style);
+
+    // Warn if required fields are empty
+    if (!user || !repo) return [];
+
     return [
-      { label: 'GitHub Actions CI', md: `![CI](https://github.com/${user}/${repo}/actions/workflows/${workflow}/badge.svg?branch=${branch})` },
-      { label: 'Codecov Coverage', md: `![Coverage](https://codecov.io/gh/${user}/${repo}/branch/${branch}/graph/badge.svg)` },
+      { label: 'GitHub Actions CI', md: `![CI](https://github.com/${user}/${repo}/actions/workflows/${workflow || 'ci.yml'}/badge.svg?branch=${branch || 'main'})` },
+      { label: 'Codecov Coverage', md: `![Coverage](https://codecov.io/gh/${user}/${repo}/branch/${branch || 'main'}/graph/badge.svg)` },
       { label: 'GitHub Stars', md: `![Stars](https://img.shields.io/github/stars/${user}/${repo}?style=${style}&logo=github)` },
       { label: 'GitHub Forks', md: `![Forks](https://img.shields.io/github/forks/${user}/${repo}?style=${style}&logo=github)` },
       { label: 'GitHub Issues', md: `![Issues](https://img.shields.io/github/issues/${user}/${repo}?style=${style})` },
@@ -35,9 +48,12 @@ const GitHubTab = ({ context, setContext, onCopy }) => {
   };
 
   const generateProfileBlock = () => {
-    const { user, profileName, stack, linkedin, portfolio, style } = ctx;
-    const stackBadges = stack.split(',').map(s => s.trim()).filter(Boolean).map(s => 
-      `![${s}](https://img.shields.io/badge/${s}-black?style=${style}&logo=${s})`
+    const user = plain(ctx.user);
+    const { profileName, style } = ctx;
+    const linkedin = plain(ctx.linkedin);
+    const portfolio = plain(ctx.portfolio);
+    const stackBadges = (ctx.stack || '').split(',').map(s => s.trim()).filter(Boolean).map(s => 
+      `![${s}](https://img.shields.io/badge/${encodeURIComponent(s)}-black?style=${style}&logo=${encodeURIComponent(s)})`
     ).join(' ');
 
     return `### Hi there 👋, I'm ${profileName}
@@ -81,8 +97,18 @@ ${stackBadges}
             <Grid item xs={12}><InputField label="Shields Style (e.g. flat, for-the-badge)" value={ctx.style} onChange={v => update('style', v)} /></Grid>
           </Grid>
           
+          {(!ctx.user?.trim() || !ctx.repo?.trim()) && (
+            <Alert severity="warning" sx={{ mb: 2, fontSize: '0.7rem' }}>
+              Enter Owner and Repository to generate valid badge URLs.
+            </Alert>
+          )}
+
           <Stack spacing={2}>
-            {projectBadges.map((b, i) => (
+            {projectBadges.length === 0 ? (
+              <Typography variant="caption" sx={{ color: 'text.disabled', textAlign: 'center', display: 'block', py: 2 }}>
+                Fill in Owner / Org and Repository above.
+              </Typography>
+            ) : projectBadges.map((b, i) => (
               <Paper key={i} variant="outlined" sx={{ p: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', bgcolor: 'background.neutral' }}>
                 <Box sx={{ overflow: 'hidden', mr: 2 }}>
                   <Typography variant="caption" sx={{ fontWeight: 900, color: 'text.secondary', display: 'block', mb: 0.5 }}>{b.label}</Typography>
@@ -93,9 +119,11 @@ ${stackBadges}
                 </IconButton>
               </Paper>
             ))}
-            <Button variant="contained" onClick={() => onCopy(projectBadges.map(b => b.md).join('\n'), 'All Badges')} sx={{ mt: 2, fontWeight: 800 }}>
-              Copy All Repo Badges
-            </Button>
+            {projectBadges.length > 0 && (
+              <Button variant="contained" onClick={() => onCopy(projectBadges.map(b => b.md).join('\n'), 'All Badges')} sx={{ mt: 2, fontWeight: 800 }}>
+                Copy All Repo Badges
+              </Button>
+            )}
           </Stack>
         </Box>
       ) : (

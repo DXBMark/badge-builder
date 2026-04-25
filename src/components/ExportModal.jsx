@@ -33,13 +33,13 @@ const ExportModal = ({ show, onClose, onExportSVG, onExportPNG, onCopyCode, onCo
     onClose={onClose}
     fullWidth
     maxWidth="xs"
-    PaperProps={{ sx: { borderRadius: 4, p: 1 } }}
+    PaperProps={{ sx: { borderRadius: 4, p: { xs: 0.25, sm: 1 }, m: { xs: 1, sm: 2 }, width: 'calc(100% - 16px)' } }}
   >
-    <DialogTitle sx={{ m: 0, p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <DialogTitle sx={{ m: 0, p: { xs: 1.5, sm: 2 }, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
       <Typography variant="overline" sx={{ fontWeight: 900, color: 'text.secondary' }}>Export Asset</Typography>
       <IconButton size="small" onClick={onClose}><CloseIcon /></IconButton>
     </DialogTitle>
-    <DialogContent sx={{ px: 2, pb: 3 }}>
+    <DialogContent sx={{ px: { xs: 1.5, sm: 2 }, pb: 3 }}>
       <Typography variant="caption" sx={{ fontWeight: 900, color: 'text.disabled', px: 1, mb: 1, display: 'block', textTransform: 'uppercase' }}>Downloads</Typography>
       <List sx={{ pt: 0 }}>
         <ListItemButton onClick={onExportSVG} sx={{ borderRadius: 2, mb: 1, py: 1, border: '1px solid', borderColor: 'divider' }}>

@@ -46,12 +46,13 @@ const TabBar = ({ activeTab, onTabChange }) => {
         scrollButtons="auto"
         sx={{
           '& .MuiTab-root': {
-            minWidth: 80,
-            fontSize: '0.625rem',
+            minWidth: { xs: 64, sm: 80 },
+            fontSize: { xs: '0.58rem', sm: '0.625rem' },
             fontWeight: 800,
             textTransform: 'uppercase',
             letterSpacing: '0.05em',
-            py: 2
+            py: { xs: 1.25, sm: 2 },
+            px: { xs: 1, sm: 1.5 },
           }
         }}
       >

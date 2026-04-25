@@ -19,7 +19,7 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 const CHANGELOG = [
   {
     version: 'v1.0.0',
-    date: '2026-04-24',
+    date: '2026-04-25',
     label: 'Initial Public Release',
     added: [
       'Live SVG badge preview with instant rendering',
@@ -44,6 +44,15 @@ const CHANGELOG = [
       'Responsive layout for desktop and tablet',
       'SvgSource panel — theme-aware code view with tabbed output modes',
       'Open Graph, Twitter Card & JSON-LD structured metadata',
+      'Badge Pack Builder — create, reorder, duplicate, and delete badge packs',
+      '7 built-in packs: Developer Profile, React Project, Python Package, Django, Docker, CI/CD, Open Source',
+      'Pack output modes: Inline Markdown, Stacked Markdown, HTML, Table',
+      'Built-in pack loader with dynamic inputs (owner, repo, branch, workflow, etc.)',
+      'Apply Brand to Pack — applies current style to all local badges in pack',
+      'Save / Export / Import pack as JSON',
+      'README Preview tab in Source panel — live mock GitHub README render',
+      'Reset to Demo button in header toolbar',
+      'Auto-save and restore badge config across page refreshes',
     ],
     changed: [],
     fixed: [],

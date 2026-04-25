@@ -14,6 +14,7 @@ import CodeIcon from '@mui/icons-material/Code';
 import DescriptionIcon from '@mui/icons-material/Description';
 import StorageIcon from '@mui/icons-material/Storage';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import PreviewIcon from '@mui/icons-material/Visibility';
 
 const SvgSource = ({ svg, config, onCopy }) => {
   const theme = useTheme();
@@ -43,11 +44,13 @@ const SvgSource = ({ svg, config, onCopy }) => {
     const color = (config.rightBg || '#4c1').replace('#', '');
     const md = `![${label}](https://img.shields.io/badge/${encodeURIComponent(label)}-${encodeURIComponent(value)}-${color})`;
     let htmlSnippet = '';
+    let svgDataUrl = '';
     try {
       const bytes = new TextEncoder().encode(svg);
       const binString = Array.from(bytes, (byte) => String.fromCharCode(byte)).join("");
       const safeB64 = btoa(binString);
       htmlSnippet = `<img src="data:image/svg+xml;base64,${safeB64}" alt="${label}" />`;
+      svgDataUrl = `data:image/svg+xml;base64,${safeB64}`;
     } catch (e) {
       console.error("[TS Error] SvgSource encoding failed:", e);
       htmlSnippet = '<!-- Error: Unable to encode SVG to Base64 -->';
@@ -60,11 +63,15 @@ const SvgSource = ({ svg, config, onCopy }) => {
       markdown: md,
       html: htmlSnippet,
       json,
-      github
+      github,
+      _svgDataUrl: svgDataUrl,
+      _md: md,
+      _label: label,
+      _value: value,
     };
   }, [svg, config]);
 
-  const activeContent = snippets[activeTab];
+  const activeContent = activeTab === 'readme' ? snippets._md : snippets[activeTab];
 
   return (
     <Paper
@@ -128,6 +135,7 @@ const SvgSource = ({ svg, config, onCopy }) => {
           <Tab value="html" label="HTML" icon={<CodeIcon sx={{ fontSize: 15 }} />} iconPosition="start" />
           <Tab value="json" label="JSON" icon={<StorageIcon sx={{ fontSize: 15 }} />} iconPosition="start" />
           <Tab value="github" label="GH README" icon={<MenuBookIcon sx={{ fontSize: 15 }} />} iconPosition="start" />
+          <Tab value="readme" label="PREVIEW" icon={<PreviewIcon sx={{ fontSize: 15 }} />} iconPosition="start" />
         </Tabs>
       </Box>
 
@@ -203,7 +211,59 @@ const SvgSource = ({ svg, config, onCopy }) => {
       </Box>
 
       <Box sx={{ position: 'relative', bgcolor: sourceTheme.rootBg }}>
-        <Box
+        {activeTab === 'readme' ? (
+          /* ─── README Preview pane ─────────────────────────────────────────── */
+          <Box sx={{ p: 3 }}>
+            <Box
+              sx={{
+                bgcolor: isDark ? '#0d1117' : '#ffffff',
+                border: '1px solid',
+                borderColor: isDark ? '#30363d' : '#d0d7de',
+                borderRadius: 2,
+                p: 3,
+                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif',
+                color: isDark ? '#c9d1d9' : '#24292f',
+              }}
+            >
+              {/* Mock README header */}
+              <Typography sx={{ fontSize: '1.5rem', fontWeight: 700, borderBottom: '1px solid', borderColor: isDark ? '#30363d' : '#d0d7de', pb: 1, mb: 2, color: isDark ? '#e6edf3' : '#1f2328', fontFamily: 'inherit' }}>
+                my-awesome-project
+              </Typography>
+              <Box sx={{ mb: 2 }}>
+                {snippets._svgDataUrl ? (
+                  <img src={snippets._svgDataUrl} alt={snippets._label} style={{ display: 'inline-block', maxHeight: 40 }} />
+                ) : (
+                  <Chip label="Badge render unavailable" size="small" />
+                )}
+              </Box>
+              <Typography sx={{ fontSize: '0.875rem', lineHeight: 1.6, color: isDark ? '#8b949e' : '#656d76', fontFamily: 'inherit', mb: 2 }}>
+                A short description of your project goes here.
+              </Typography>
+              <Typography sx={{ fontSize: '1rem', fontWeight: 700, mb: 1, color: isDark ? '#e6edf3' : '#1f2328', fontFamily: 'inherit' }}>
+                Installation
+              </Typography>
+              <Box sx={{ bgcolor: isDark ? '#161b22' : '#f6f8fa', border: '1px solid', borderColor: isDark ? '#30363d' : '#d0d7de', borderRadius: 1, p: 1.5 }}>
+                <Typography sx={{ fontFamily: 'monospace', fontSize: '0.8rem', color: isDark ? '#c9d1d9' : '#24292f' }}>
+                  npm install my-awesome-project
+                </Typography>
+              </Box>
+            </Box>
+            <Typography variant="caption" sx={{ display: 'block', mt: 1.5, color: 'text.disabled', textAlign: 'center', fontSize: '0.6rem' }}>
+              Mock GitHub README preview — badge renders as it would appear in a real README.
+            </Typography>
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<ContentCopyIcon sx={{ fontSize: '0.75rem !important' }} />}
+              onClick={() => onCopy(snippets._md, 'Markdown Snippet')}
+              sx={{ mt: 1.5, fontWeight: 800, fontSize: '0.65rem', display: 'flex', mx: 'auto' }}
+            >
+              Copy Markdown
+            </Button>
+          </Box>
+        ) : (
+        <>
+          <Box
           sx={{
             p: 2.25,
             maxHeight: expanded ? 'none' : 150,
@@ -279,6 +339,8 @@ const SvgSource = ({ svg, config, onCopy }) => {
             {expanded ? 'Collapse' : 'View Full'}
           </Button>
         </Box>
+        </>
+        )}
       </Box>
     </Paper>
   );

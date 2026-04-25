@@ -5,7 +5,7 @@
  * Notes: Full MUI integration. Production ready.
  */
 
-import React, { useState, useMemo, useEffect, useCallback, useContext } from 'react';
+import { useState, useMemo, useEffect, useCallback, useContext } from 'react';
 import { 
   Box, 
   Container, 
@@ -21,14 +21,13 @@ import {
   Stack,
   Chip
 } from '@mui/material';
-import Divider from '@mui/material/Divider';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import PaletteIcon from '@mui/icons-material/Palette';
 import DownloadIcon from '@mui/icons-material/Download';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import ShareIcon from '@mui/icons-material/Share';
 import CloudSyncIcon from '@mui/icons-material/CloudSync';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 // Context
 import { ColorModeContext } from './main';
@@ -88,6 +87,43 @@ const createHtmlSnippet = (svg, config) => {
   return `<img src="data:image/svg+xml;base64,${safeB64}" alt="${label}" />`;
 };
 
+const readStoredJson = (key, fallback) => {
+  if (typeof window === 'undefined') {
+    return fallback;
+  }
+
+  try {
+    const value = window.localStorage.getItem(key);
+    return value ? JSON.parse(value) : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+const getInitialConfig = () => {
+  if (typeof window === 'undefined') {
+    return BASE_PRESETS[0].config;
+  }
+
+  if (window.location.hash) {
+    const decoded = decodeConfigFromHash(window.location.hash);
+    if (decoded) {
+      return decoded;
+    }
+  }
+
+  return readStoredJson('ts_badge_current', BASE_PRESETS[0].config);
+};
+
+const persistJson = (key, value) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 /**
  * [TS] Main Application Component
  */
@@ -97,9 +133,9 @@ const App = ({ mode }) => {
   /*
    * [TS] Application State
    */
-  const [config, setConfig] = useState(BASE_PRESETS[0].config);
-  const [customPresets, setCustomPresets] = useState({});
-  const [customBrands, setCustomBrands] = useState({});
+  const [config, setConfig] = useState(() => getInitialConfig());
+  const [customPresets, setCustomPresets] = useState(() => readStoredJson('ts_badge_presets_mui', {}));
+  const [customBrands, setCustomBrands] = useState(() => readStoredJson('ts_badge_brands_mui', {}));
   const [activeTab, setActiveTab] = useState('content');
   const [toast, setToast] = useState({ open: false, message: '', severity: 'info' });
   const [showExport, setShowExport] = useState(false);
@@ -114,57 +150,49 @@ const App = ({ mode }) => {
 
   const { handleDragStart, handleDragMove, handleDragEnd, dragState } = useDrag(config, setConfig);
 
-  // Phase 8: Shareable Hash
-  useEffect(() => {
-    if (window.location.hash) {
-      const decoded = decodeConfigFromHash(window.location.hash);
-      if (decoded) {
-        setConfig(decoded);
-        setToast({ open: true, message: 'Loaded config from URL', severity: 'success' });
-      }
-    }
-  }, []);
-
   const handleShareUrl = useCallback(() => {
     try {
       const hash = encodeConfigToHash(config);
       window.location.hash = hash;
       navigator.clipboard.writeText(window.location.href);
       setToast({ open: true, message: 'Shareable URL Copied!', severity: 'success' });
-    } catch(e) {
+    } catch {
       setToast({ open: true, message: 'Failed to generate URL', severity: 'error' });
     }
   }, [config]);
+
+  // Reset to demo badge
+  const handleResetDemo = useCallback(() => {
+    setConfig(BASE_PRESETS[0].config);
+    setToast({ open: true, message: 'Badge reset to demo.', severity: 'info' });
+  }, []);
 
   // Phase 8: Workspace Restore
   const handleRestoreWorkspace = useCallback((data) => {
     if (data.presets) {
       setCustomPresets(data.presets);
-      localStorage.setItem('ts_badge_presets_mui', JSON.stringify(data.presets));
+      persistJson('ts_badge_presets_mui', data.presets);
     }
     if (data.brands) {
       setCustomBrands(data.brands);
-      localStorage.setItem('ts_badge_brands_mui', JSON.stringify(data.brands));
+      persistJson('ts_badge_brands_mui', data.brands);
     }
-    // future: packs
-    // if (data.config) setConfig(data.config);
+    if (data.pack) {
+      persistJson('bbp.currentPack', data.pack);
+    }
+    if (data.config) {
+      setConfig(data.config);
+      persistJson('ts_badge_current', data.config);
+    }
     setToast({ open: true, message: 'Workspace Restored Successfully!', severity: 'success' });
   }, []);
 
-  /*
-   * [TS] Persist Custom Presets
-   */
+  // Auto-save current badge whenever config changes
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('ts_badge_presets_mui');
-      if (stored) setCustomPresets(JSON.parse(stored));
-      
-      const storedBrands = localStorage.getItem('ts_badge_brands_mui');
-      if (storedBrands) setCustomBrands(JSON.parse(storedBrands));
-    } catch(e) {
-      console.error("[TS Error] Failed to load presets/brands", e);
+    if (!persistJson('ts_badge_current', config)) {
+      return;
     }
-  }, []);
+  }, [config]);
 
   const savePreset = useCallback((name) => {
     const newPresets = {
@@ -174,14 +202,13 @@ const App = ({ mode }) => {
 
     setCustomPresets(newPresets);
 
-    try {
-      localStorage.setItem('ts_badge_presets_mui', JSON.stringify(newPresets));
+    if (persistJson('ts_badge_presets_mui', newPresets)) {
       setToast({
         open: true,
         message: `Preset "${name}" Saved!`,
         severity: 'success',
       });
-    } catch (e) {
+    } else {
       setToast({
         open: true,
         message: 'Failed to save preset',
@@ -194,23 +221,22 @@ const App = ({ mode }) => {
     const newPresets = { ...customPresets };
     delete newPresets[name];
     setCustomPresets(newPresets);
-    try { localStorage.setItem('ts_badge_presets_mui', JSON.stringify(newPresets)); } catch(e) {}
+    persistJson('ts_badge_presets_mui', newPresets);
   }, [customPresets]);
 
   const saveBrand = useCallback((brand) => {
     const newBrands = { ...customBrands, [brand.id]: brand };
     setCustomBrands(newBrands);
-    try {
-      localStorage.setItem('ts_badge_brands_mui', JSON.stringify(newBrands));
+    if (persistJson('ts_badge_brands_mui', newBrands)) {
       setToast({ open: true, message: `Brand Kit "${brand.name}" Saved!`, severity: 'success' });
-    } catch(e) {}
+    }
   }, [customBrands]);
 
   const deleteBrand = useCallback((id) => {
     const newBrands = { ...customBrands };
     delete newBrands[id];
     setCustomBrands(newBrands);
-    try { localStorage.setItem('ts_badge_brands_mui', JSON.stringify(newBrands)); } catch(e) {}
+    persistJson('ts_badge_brands_mui', newBrands);
   }, [customBrands]);
 
   /*
@@ -230,7 +256,7 @@ const App = ({ mode }) => {
     try {
       navigator.clipboard.writeText(text);
       setToast({ open: true, message: `${label} Copied to Clipboard!`, severity: 'success' });
-    } catch (e) {
+    } catch {
       setToast({ open: true, message: 'Failed to copy', severity: 'error' });
     }
   }, []);
@@ -259,7 +285,9 @@ const App = ({ mode }) => {
             setToast({ open: true, message: 'SVG Icon Loaded', severity: 'success' });
             return;
           }
-        } catch(err) {}
+        } catch {
+          return;
+        }
       }
       setConfig(prev => ({ ...prev, customIconUrl: event.target.result, iconMode: 'custom' }));
       setToast({ open: true, message: 'Image Icon Loaded', severity: 'success' });
@@ -317,55 +345,107 @@ const App = ({ mode }) => {
     >
       <AppBar position="static" color="inherit" elevation={0} sx={{ flexShrink: 0, borderBottom: '1px solid', borderColor: 'divider', mb: 1, bgcolor: 'background.paper', transition: 'background-color 0.3s ease' }}>
         <Container maxWidth="xl">
-          <Toolbar disableGutters sx={{ justifyContent: 'space-between', py: 1 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Box sx={{ p: 1, bgcolor: mode === 'dark' ? 'primary.main' : 'primary.main', color: mode === 'dark' ? 'primary.contrastText' : 'white', borderRadius: 1.5, display: 'flex', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-                <PaletteIcon />
-              </Box>
+          <Toolbar disableGutters sx={{ justifyContent: 'space-between', py: 1, minHeight: { xs: 56, sm: 64 } }}>
+
+            {/* ── Brand / Logo ───────────────────────────────── */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 2 } }}>
+              <Box
+                component="img"
+                src="/badge-builder/logo.png"
+                alt="Badge Builder Pro logo"
+                sx={{ height: { xs: 32, sm: 38 }, width: 'auto', borderRadius: 1.5, display: 'block', flexShrink: 0 }}
+              />
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: 900, letterSpacing: '-0.02em', color: 'text.primary' }}>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    lineHeight: 1,
+                    fontWeight: 900,
+                    letterSpacing: '-0.02em',
+                    color: 'text.primary',
+                    display: { xs: 'none', sm: 'block' },
+                  }}
+                >
                   Badge Builder Pro
                 </Typography>
-                <Chip label="v1" size="small" sx={{ fontWeight: 900, bgcolor: 'primary.main', color: 'background.paper', height: 20, fontSize: '0.65rem' }} />
+                <Chip
+                  label="v1"
+                  size="small"
+                  sx={{
+                    fontWeight: 900,
+                    bgcolor: 'primary.main',
+                    color: 'background.paper',
+                    height: 20,
+                    fontSize: '0.65rem',
+                    display: { xs: 'none', sm: 'flex' },
+                  }}
+                />
               </Box>
             </Box>
-            
-            <Stack direction="row" spacing={1.5} alignItems="center">
-              <IconButton 
-                onClick={handleShareUrl} 
+
+            {/* ── Toolbar actions ────────────────────────────── */}
+            <Stack direction="row" spacing={{ xs: 0.5, sm: 1.5 }} alignItems="center">
+              {/* Share — hidden on xs */}
+              <IconButton
+                onClick={handleShareUrl}
                 title="Share via Config URL"
-                sx={{ color: 'text.secondary', '&:hover': { color: 'primary.main', bgcolor: 'action.hover' } }}
+                sx={{ color: 'text.secondary', display: { xs: 'none', sm: 'inline-flex' }, '&:hover': { color: 'primary.main', bgcolor: 'action.hover' } }}
               >
                 <ShareIcon />
               </IconButton>
-              <IconButton 
-                onClick={() => setShowWorkspace(true)} 
+
+              {/* Reset demo */}
+              <IconButton
+                onClick={handleResetDemo}
+                title="Reset to Demo Badge"
+                sx={{ color: 'text.secondary', '&:hover': { color: 'warning.main', bgcolor: 'action.hover' } }}
+              >
+                <RefreshIcon sx={{ fontSize: 20 }} />
+              </IconButton>
+
+              {/* Workspace — hidden on xs */}
+              <IconButton
+                onClick={() => setShowWorkspace(true)}
                 title="Workspace Export/Import"
-                sx={{ color: 'text.secondary', '&:hover': { color: 'primary.main', bgcolor: 'action.hover' } }}
+                sx={{ color: 'text.secondary', display: { xs: 'none', sm: 'inline-flex' }, '&:hover': { color: 'primary.main', bgcolor: 'action.hover' } }}
               >
                 <CloudSyncIcon />
               </IconButton>
-              <IconButton 
-                onClick={colorMode.toggleColorMode} 
+
+              {/* Dark mode toggle */}
+              <IconButton
+                onClick={colorMode.toggleColorMode}
                 sx={{ color: 'text.secondary', '&:hover': { color: 'primary.main', bgcolor: 'action.hover' } }}
               >
                 {mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
               </IconButton>
-              <IconButton 
-                component={Link} 
-                href="https://github.com/DXBMark/badge-builder.git" 
+
+              {/* GitHub — hidden on xs */}
+              <IconButton
+                component={Link}
+                href="https://github.com/DXBMark/badge-builder.git"
                 target="_blank"
-                sx={{ color: 'text.secondary', '&:hover': { color: 'primary.main', bgcolor: 'action.hover' } }}
+                sx={{ color: 'text.secondary', display: { xs: 'none', md: 'inline-flex' }, '&:hover': { color: 'primary.main', bgcolor: 'action.hover' } }}
               >
                 <GitHubIcon />
               </IconButton>
-              <Button 
-                variant="contained" 
+
+              {/* Export CTA — icon-only on xs, full label on sm+ */}
+              <Button
+                variant="contained"
                 startIcon={<DownloadIcon />}
                 onClick={() => setShowExport(true)}
-                sx={{ borderRadius: 2, px: 3, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                sx={{
+                  borderRadius: 2,
+                  px: { xs: 1.5, sm: 3 },
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  minWidth: 0,
+                  '& .MuiButton-startIcon': { mr: { xs: 0, sm: 1 } },
+                }}
               >
-                EXPORT ASSET
+                <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>EXPORT ASSET</Box>
               </Button>
             </Stack>
           </Toolbar>
@@ -398,7 +478,7 @@ const App = ({ mode }) => {
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               <Paper sx={{ borderRadius: 4, overflow: 'hidden' }}>
                 <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
-                <Box sx={{ p: 3, maxHeight: 'calc(100vh - 220px)', overflowY: 'auto' }}>
+                <Box sx={{ p: { xs: 2, sm: 3 }, maxHeight: { xs: 'none', lg: 'calc(100vh - 220px)' }, overflowY: { xs: 'visible', lg: 'auto' } }}>
                   {activeTab === 'content' && <ContentTab config={config} update={update} />}
                   {activeTab === 'layout' && <LayoutTab config={config} update={update} />}
                   {activeTab === 'style' && <StyleTab config={config} update={update} />}
@@ -438,7 +518,7 @@ const App = ({ mode }) => {
       {/* Footer */}
       <Box component="footer" sx={{ mt: 'auto', py: 3, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
         <Container maxWidth="xl">
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2, flexDirection: { xs: 'column', sm: 'row' }, textAlign: { xs: 'center', sm: 'left' } }}>
             <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 700 }}>
               © {new Date().getFullYear()} Badge Builder Pro by DXBMark Ltd. All rights reserved.
             </Typography>

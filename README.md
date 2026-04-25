@@ -29,7 +29,7 @@
 
 ## 📸 Preview
 
-![SVG Badge Builder Preview](public/screencapture-badge-builder.png)
+![SVG Badge Builder Preview](public/screencapture-badge-builder.gif)
 
 ---
 

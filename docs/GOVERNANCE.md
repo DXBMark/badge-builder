@@ -57,5 +57,18 @@ When adding a new Built-in Brand Kit to `src/constants/brands.js`:
 - The ID must be unique.
 - The kit must undergo visual testing in both light and dark backgrounds via the Live Preview panel.
 
+## 5. Changelog Policy
+
+`CHANGELOG.md` (in the repository root) is the **single source of truth** for all project changes.
+
+### Rules
+- **Every change must be recorded** — features, fixes, refactors, and governance updates all require a changelog entry before merging.
+- **`CHANGELOG.md` is the master file.** Any secondary changelog representation (e.g., `ChangelogModal.jsx` in the UI) must mirror `CHANGELOG.md` — never the other way around.
+- Entries follow the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format with sections: `Added`, `Changed`, `Fixed`, `Removed`.
+- Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html): `MAJOR.MINOR.PATCH`.
+- The newest version always appears **first** in the file.
+- Each entry must include the release date in `YYYY-MM-DD` format.
+- Do **not** edit a previously published version's entries — create a new version entry instead.
+
 ---
 Built with ❤️ by [Tariq Said](https://portfolio.dxbmark.com/)

@@ -153,6 +153,7 @@ const ItemRow = ({ item, index, total, onMoveUp, onMoveDown, onDuplicate, onRemo
 const PackTab = ({ config, onCopy, onLoadBadge }) => {
   const [pack, setPack] = useState([]);
   const [loadModal, setLoadModal] = useState(null); // { pack, inputs: {} }
+  const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
   const [outputMode, setOutputMode] = useState('inline');
   const fileInputRef = useRef(null);
 
@@ -303,7 +304,7 @@ const PackTab = ({ config, onCopy, onLoadBadge }) => {
             <Typography variant="overline" sx={{ fontWeight: 900, color: 'text.secondary', fontSize: '0.6rem' }}>
               Current Pack · {pack.length} {pack.length === 1 ? 'badge' : 'badges'}
             </Typography>
-            <Button size="small" color="error" onClick={() => setPack([])}
+            <Button size="small" color="error" onClick={() => setClearConfirmOpen(true)}
               sx={{ fontWeight: 800, fontSize: '0.6rem', py: 0.35, px: 1, minWidth: 0 }}>
               Clear
             </Button>
@@ -406,6 +407,23 @@ const PackTab = ({ config, onCopy, onLoadBadge }) => {
           </Grid>
         ))}
       </Grid>
+
+      {/* Clear Pack confirmation */}
+      <Dialog open={clearConfirmOpen} onClose={() => setClearConfirmOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle sx={{ fontWeight: 900, fontSize: '0.95rem' }}>Clear Pack?</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            This will remove all {pack.length} badge{pack.length !== 1 ? 's' : ''} from the current pack. This cannot be undone.
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={() => setClearConfirmOpen(false)} sx={{ fontWeight: 700, fontSize: '0.75rem' }}>Cancel</Button>
+          <Button variant="contained" color="error" onClick={() => { setPack([]); setClearConfirmOpen(false); }}
+            sx={{ fontWeight: 800, fontSize: '0.75rem' }}>
+            Clear All
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Built-in Pack inputs modal */}
       <Dialog open={!!loadModal} onClose={() => setLoadModal(null)} maxWidth="xs" fullWidth>
