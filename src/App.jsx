@@ -412,7 +412,7 @@ const App = ({ mode }) => {
                     />
                   )}
                   {activeTab === 'brand' && <BrandTab config={config} update={update} customBrands={customBrands} saveBrand={saveBrand} deleteBrand={deleteBrand} />}
-                  {activeTab === 'pack' && <PackTab config={config} onCopy={handleCopy} />}
+                  {activeTab === 'pack' && <PackTab config={config} onCopy={handleCopy} onLoadBadge={setConfig} />}
                   {activeTab === 'github' && (
                     <GitHubTab 
                       context={gitHubContext} 

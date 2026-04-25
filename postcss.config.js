@@ -1,6 +1,2 @@
-export default {
-  plugins: {
-    '@tailwindcss/postcss': {},
-    autoprefixer: {},
-  },
-}
+// Tailwind v4 is handled via @tailwindcss/vite plugin in vite.config.js
+export default {}
